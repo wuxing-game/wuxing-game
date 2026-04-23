@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五行运算 · 一维修行</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4AF37;--gold-l:#F4E4BA;
+  --wood:#228B22;--wood-l:#90EE90;
+  --water:#1E90FF;--water-l:#87CEEB;
+  --fire:#DC143C;--fire-l:#FF6B6B;
+  --earth:#8B4513;--earth-l:#DEB887;
+  --bg:#0a0a0f;--card:#12121a;--card2:#1a1a28;
+  --txt:#f0e6d3;--txt2:#777;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--txt);min-height:100vh}
+.bg{position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(212,175,55,.07),transparent 50%),radial-gradient(ellipse at 80% 70%,rgba(30,144,255,.05),transparent 50%);pointer-events:none}
+
+.wrap{max-width:900px;margin:0 auto;padding:1.5rem;position:relative;z-index:1}
+header{text-align:center;padding:1.5rem 0 1rem}
+h1{font-family:'Ma Shan Zheng',cursive;font-size:3rem;background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{color:var(--txt2);letter-spacing:.5em;font-size:.85rem;margin-top:.3rem}
+
+/* 主矩阵表格 - 带文字标注 */
+.matrix-main{background:var(--card);border:1px solid rgba(212,175,55,.25);border-radius:14px;padding:1.2rem;margin:1rem 0}
+.matrix-main h3{font-family:'Ma Shan Zheng',cursive;color:var(--gold);font-size:1.4rem;margin-bottom:.8rem;text-align:center}
+.mtable{width:100%;border-collapse:collapse;font-size:.85rem}
+.mtable th,.mtable td{padding:.6rem .4rem;text-align:center;border:1px solid rgba(255,255,255,.1)}
+.mtable th{background:rgba(212,175,55,.12);color:var(--gold);font-weight:400;font-family:'Ma Shan Zheng',cursive;font-size:1rem}
+.mtable th.col-hd{background:rgba(30,144,255,.15);color:var(--water-l)}
+.mtable th.row-hd{background:rgba(220,20,60,.12);color:var(--fire-l)}
+.mtable td{vertical-align:middle}
+.mtable .val{font-size:1.1rem;font-weight:700}
+.mtable .rel{font-size:.65rem;opacity:.7;margin-top:.1rem}
+.mtable .pos .val{color:var(--wood)}
+.mtable .pos .rel{color:var(--wood-l)}
+.mtable .neg .val{color:var(--fire)}
+.mtable .neg .rel{color:var(--fire-l)}
+.mtable .zero .val{color:var(--txt2)}
+.matrix-note{margin-top:.8rem;font-size:.75rem;color:var(--txt2);text-align:center;line-height:1.6}
+
+/* 关卡选择 */
+.vols{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;margin-top:1rem}
+.vcard{background:var(--card);border:1px solid rgba(212,175,55,.15);border-radius:14px;padding:1rem;cursor:pointer;transition:.3s;position:relative}
+.vcard::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(212,175,55,.06));opacity:0;transition:.3s;border-radius:14px}
+.vcard:hover::after{opacity:1}
+.vcard:hover{transform:translateY(-3px);border-color:var(--gold)}
+.vcard.locked{opacity:.4;cursor:not-allowed;filter:grayscale(.5)}
+.vcard.locked:hover{transform:none;border-color:rgba(212,175,55,.15)}
+.vbadge{display:inline-block;padding:.2rem .5rem;background:rgba(212,175,55,.15);border-radius:10px;font-size:.7rem;color:var(--gold)}
+.vname{font-family:'Ma Shan Zheng',cursive;font-size:1.3rem;color:var(--gold);margin:.2rem 0}
+.vdesc{color:var(--txt2);font-size:.75rem;line-height:1.4}
+.velems{margin-top:.4rem;font-size:.75rem;color:var(--txt);display:flex;gap:.3rem;flex-wrap:wrap}
+.velems span{padding:.15rem .4rem;background:rgba(255,255,255,.05);border-radius:4px}
+.vprog{display:flex;align-items:center;gap:.5rem;margin-top:.6rem}
+.pbar{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-l));transition:width .4s}
+.pscore{font-size:.75rem;color:var(--txt2);min-width:32px;text-align:right}
+
+/* 关卡按钮 */
+.levels{display:none;grid-template-columns:repeat(5,1fr);gap:.5rem;margin-top:.8rem}
+.levels.show{display:grid;animation:fadeUp .3s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.lbtn{aspect-ratio:1;border-radius:10px;border:2px solid rgba(212,175,55,.15);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:.25s;gap:.1rem}
+.lbtn:hover{border-color:var(--gold);transform:scale(1.05)}
+.lbtn.locked{opacity:.35;cursor:not-allowed}
+.lbtn.locked:hover{transform:none}
+.lbtn.done{border-color:var(--gold);background:rgba(212,175,55,.08)}
+.lbtn.current{border-color:var(--gold);box-shadow:0 0 12px rgba(212,175,55,.25)}
+.lnum{font-family:'Ma Shan Zheng',cursive;font-size:1.1rem;color:var(--gold)}
+.lstars{font-size:.65rem;color:var(--gold);letter-spacing:1px}
+
+/* 游戏区 */
+.game{display:none;background:var(--card);border:1px solid rgba(212,175,55,.15);border-radius:16px;padding:1.2rem;margin-top:1rem}
+.game.show{display:block;animation:fadeUp .3s}
+.gtop{display:flex;justify-content:space-between;align-items:center;padding-bottom:.8rem;border-bottom:1px solid rgba(212,175,55,.1);margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.ginfo{display:flex;align-items:center;gap:.6rem}
+.gnum{font-family:'Ma Shan Zheng',cursive;font-size:1.8rem;color:var(--gold)}
+.gtitle{font-size:1rem}
+.gdesc{font-size:.7rem;color:var(--txt2)}
+.gscore{text-align:right}
+.gslabel{font-size:.65rem;color:var(--txt2)}
+.gsval{font-family:'Ma Shan Zheng',cursive;font-size:1.5rem;color:var(--gold)}
+
+/* 目标提示 */
+.target{text-align:center;padding:.5rem;background:rgba(0,0,0,.2);border-radius:8px;margin-bottom:.8rem;font-size:.8rem;color:var(--txt2)}
+.target span{color:var(--gold);font-weight:700}
+
+/* 元素显示 */
+.elems{display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem}
+.elem{display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.6rem .7rem;background:rgba(255,255,255,.02);border-radius:10px;border:2px solid transparent;transition:.2s;min-width:58px}
+.elem.matched{border-color:var(--gold)!important;box-shadow:0 0 10px rgba(212,175,55,.15)}
+.eicon{font-size:1.5rem}
+.ename{font-size:.65rem;color:var(--txt2)}
+.eval{font-family:'Ma Shan Zheng',cursive;font-size:1.5rem;transition:.2s}
+.eval.flash{animation:vflash .3s}
+@keyframes vflash{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.eval-neg{color:var(--fire)!important}
+.eval-pos{color:var(--wood)!important}
+.eval-zero{color:var(--gold)!important}
+
+/* 步数信息 */
+.stepinfo{text-align:center;margin-bottom:.6rem;font-size:.75rem;color:var(--txt2)}
+.stepinfo b{color:var(--gold);font-family:'Ma Shan Zheng',cursive;font-size:.95rem}
+
+/* 已选外力 */
+.sel{display:flex;align-items:center;justify-content:center;gap:.25rem;min-height:40px;padding:.5rem;background:rgba(0,0,0,.15);border-radius:8px;margin-bottom:.7rem;flex-wrap:wrap}
+.sel-f{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Ma Shan Zheng',cursive;font-size:.9rem;animation:pop .2s}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.sel-f[data-c="木"]{background:rgba(34,139,34,.25);color:var(--wood)}
+.sel-f[data-c="火"]{background:rgba(220,20,60,.25);color:var(--fire)}
+.sel-f[data-c="土"]{background:rgba(139,69,19,.25);color:var(--earth)}
+.sel-f[data-c="金"]{background:rgba(212,175,55,.25);color:var(--gold)}
+.sel-f[data-c="水"]{background:rgba(30,144,255,.25);color:var(--water)}
+.sel-arrow{color:var(--txt2);font-size:.6rem}
+.sel-ph{color:var(--txt2);font-style:italic;font-size:.75rem}
+
+/* 外力按钮 */
+.forces{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.7rem}
+.fbtn{width:54px;height:54px;border-radius:50%;border:3px solid;background:transparent;cursor:pointer;font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;transition:.2s;position:relative;display:flex;align-items:center;justify-content:center}
+.fbtn:hover{transform:scale(1.08)}
+.fbtn:active{transform:scale(.92)}
+.fbtn[data-f="木"]{border-color:var(--wood);color:var(--wood)}
+.fbtn[data-f="火"]{border-color:var(--fire);color:var(--fire)}
+.fbtn[data-f="土"]{border-color:var(--earth);color:var(--earth)}
+.fbtn[data-f="金"]{border-color:var(--gold);color:var(--gold)}
+.fbtn[data-f="水"]{border-color:var(--water);color:var(--water)}
+.ftip{position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:#1a1a1a;border-radius:6px;padding:.3rem .5rem;font-family:'Noto Serif SC',serif;font-size:.6rem;white-space:nowrap;opacity:0;pointer-events:none;transition:.15s;z-index:50;border:1px solid rgba(255,255,255,.1)}
+.fbtn:hover .ftip{opacity:1}
+
+/* 操作按钮 */
+.acts{display:flex;justify-content:center;gap:.4rem;flex-wrap:wrap}
+.abtn{padding:.4rem .9rem;border:2px solid var(--gold);background:transparent;color:var(--gold);font-family:'Noto Serif SC',serif;font-size:.8rem;border-radius:6px;cursor:pointer;transition:.2s}
+.abtn:hover{background:var(--gold);color:var(--bg)}
+.abtn.primary{background:var(--gold);color:var(--bg)}
+.abtn.primary:hover{background:var(--gold-l)}
+.abtn:disabled{opacity:.35;cursor:not-allowed}
+.abtn.hint{border-color:var(--water);color:var(--water)}
+.abtn.hint:hover{background:var(--water);color:#fff}
+
+/* 结果 */
+.result{display:none;text-align:center;padding:.8rem;background:rgba(0,0,0,.2);border-radius:10px;margin-top:.6rem}
+.result.show{display:block;animation:fadeUp .3s}
+.ricon{font-size:2.5rem;margin-bottom:.2rem}
+.rtitle{font-family:'Ma Shan Zheng',cursive;font-size:1.3rem;margin-bottom:.15rem}
+.rtitle.ok{color:var(--gold)}
+.rtitle.fail{color:var(--fire)}
+.rmsg{color:var(--txt2);font-size:.75rem}
+.rscore{color:var(--gold);font-family:'Ma Shan Zheng',cursive;font-size:1.1rem;margin-top:.2rem}
+
+/* 规则面板 */
+.rules{background:rgba(0,0,0,.15);border-radius:10px;margin-top:.6rem;overflow:hidden}
+.rules-hd{padding:.6rem .9rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-family:'Ma Shan Zheng',cursive;font-size:.95rem;color:var(--gold)}
+.rules-hd .arrow{transition:.2s;font-size:.65rem}
+.rules-hd.open .arrow{transform:rotate(180deg)}
+.rules-bd{display:none;padding:0 .7rem .7rem}
+.rules-bd.show{display:block}
+
+/* 返回按钮 */
+.bbtn{position:fixed;top:1rem;left:1rem;z-index:100;width:38px;height:38px;border-radius:50%;border:2px solid var(--gold);background:var(--card);color:var(--gold);font-size:.9rem;cursor:pointer;transition:.2s;display:none;align-items:center;justify-content:center}
+.bbtn.show{display:flex}
+.bbtn:hover{background:var(--gold);color:var(--bg)}
+
+/* 星级 */
+.star-on{color:var(--gold)}
+.star-off{color:rgba(212,175,55,.15)}
+
+/* 返回链接 */
+.back-link{color:var(--txt2);cursor:pointer;font-size:.75rem}
+.back-link:hover{color:var(--gold)}
+
+/* 关卡选择弹窗 */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+.modal.show{display:flex;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--card);border:1px solid rgba(212,175,55,.2);border-radius:16px;padding:1.2rem;max-width:400px;width:100%;animation:popIn .2s}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.modal-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+.modal-title{font-family:'Ma Shan Zheng',cursive;font-size:1.3rem;color:var(--gold)}
+.modal-close{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--txt2);cursor:pointer;transition:.2s}
+.modal-close:hover{background:rgba(255,255,255,.05);color:var(--txt)}
+.modal-info{color:var(--txt2);font-size:.75rem;text-align:center;margin-bottom:.6rem}
+.modal-els{display:flex;justify-content:center;gap:.4rem;margin-bottom:.8rem;font-size:.8rem}
+.level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
+.lp-btn{aspect-ratio:1;border-radius:10px;border:2px solid rgba(212,175,55,.12);background:rgba(255,255,255,.02);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:.1rem;transition:.2s}
+.lp-btn:hover:not(.locked){border-color:var(--gold);background:rgba(212,175,55,.08);transform:scale(1.05)}
+.lp-btn.locked{opacity:.3;cursor:not-allowed}
+.lp-btn.done{border-color:var(--gold);background:rgba(212,175,55,.08)}
+.lp-btn.current{border-color:var(--gold);box-shadow:0 0 10px rgba(212,175,55,.3)}
+.lp-num{font-family:'Ma Shan Zheng',cursive;font-size:1.3rem;color:var(--gold)}
+.lp-stars{font-size:.7rem;letter-spacing:1px}
+.lp-stars .on{color:var(--gold)}
+.lp-stars .off{color:rgba(212,175,55,.2)}
+
+/* 游戏底部导航 */
+.game-nav{display:flex;justify-content:space-between;align-items:center;margin-top:.8rem;padding-top:.8rem;border-top:1px solid rgba(212,175,55,.1)}
+.nav-btn{padding:.45rem 1rem;border:1px solid rgba(212,175,55,.25);background:transparent;color:var(--gold);font-size:.8rem;border-radius:6px;cursor:pointer;transition:.2s}
+.nav-btn:hover{background:rgba(212,175,55,.1)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.nav-btn.sel{border-color:rgba(212,175,55,.15);color:var(--txt2)}
+.nav-btn.sel:hover{border-color:var(--gold);color:var(--gold)}
+
+/* 题号导航点 */
+.pg-dots{display:flex;gap:.25rem;align-items:center}
+.pg-dot{width:10px;height:10px;border-radius:50%;background:rgba(212,175,55,.15);cursor:pointer;transition:.15s}
+.pg-dot:hover{background:rgba(212,175,55,.4)}
+.pg-dot.active{background:var(--gold);box-shadow:0 0 5px rgba(212,175,55,.4)}
+.pg-dot.done{background:rgba(212,175,55,.5)}
+
+/* 响应式 */
+@media(max-width:600px){
+  h1{font-size:2.2rem}
+  .vols{grid-template-columns:1fr}
+  .fbtn{width:46px;height:46px;font-size:1.2rem}
+  .elem{padding:.5rem;min-width:50px}
+  .eval{font-size:1.3rem}
+  .mtable{font-size:.7rem}
+  .mtable .val{font-size:.9rem}
+  .lp-num{font-size:1.1rem}
+  .nav-btn{padding:.35rem .7rem;font-size:.75rem}
+}
+.rules-entry-btn{background:linear-gradient(135deg,rgba(212,175,55,.25),rgba(220,20,60,.18));border:1px solid rgba(212,175,55,.4);color:var(--gold);padding:.6rem 1.8rem;border-radius:20px;font-size:.88rem;cursor:pointer;transition:all .2s;letter-spacing:.1em}
+.rules-entry-btn:hover{background:linear-gradient(135deg,rgba(212,175,55,.35),rgba(220,20,60,.28));transform:translateY(-2px);box-shadow:0 4px 12px rgba(212,175,55,.2)}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<button class="bbtn" id="bbtn" onclick="goBack()">←</button>
+<div class="wrap">
+<header>
+  <h1>五行运算</h1>
+  <div class="sub">一 维 修 行</div>
+</header>
+
+<div id="menu">
+  <!-- 主矩阵表格 -->
+  <div class="matrix-main">
+    <h3>📜 五行生克运算矩阵</h3>
+    <table class="mtable">
+      <tr>
+        <th></th>
+        <th class="col-hd">🌳 木</th>
+        <th class="col-hd">🔥 火</th>
+        <th class="col-hd">⛰️ 土</th>
+        <th class="col-hd">🪙 金</th>
+        <th class="col-hd">💧 水</th>
+      </tr>
+      <tr>
+        <th class="row-hd">🌳 木</th>
+        <td class="pos"><div class="val">+1</div><div class="rel">助</div></td>
+        <td class="neg"><div class="val">-1</div><div class="rel">泄</div></td>
+        <td class="neg"><div class="val">-1</div><div class="rel">耗</div></td>
+        <td class="neg"><div class="val">-2</div><div class="rel">克</div></td>
+        <td class="pos"><div class="val">+2</div><div class="rel">生</div></td>
+      </tr>
+      <tr>
+        <th class="row-hd">🔥 火</th>
+        <td class="pos"><div class="val">+2</div><div class="rel">生</div></td>
+        <td class="pos"><div class="val">+1</div><div class="rel">助</div></td>
+        <td class="neg"><div class="val">-1</div><div class="rel">泄</div></td>
+        <td class="neg"><div class="val">-1</div><div class="rel">耗</div></td>
+        <td class="neg"><div class="val">-2</div><div class="rel">克</div></td>
+      </tr>
+      <tr>
+        <th class="row-hd">⛰️ 土</th>
+        <td class="neg"><div class="val">-2</div><div class="rel">克</div></td>
+        <td class="pos"><div class="val">+2</div><div class="rel">生</div></td>
+        <td class="pos"><div class="val">+1</div><div class="rel">助</div></td>
+        <td class="neg"><div class="val">-1</div><div class="rel">泄</div></td>
+        <td class="neg"><div class="val">-1</div><div class="rel">耗</div></td>
+      </tr>
+      <tr>
+        <th class="row-hd">🪙 金</th>
+        <td class="neg"><div class="val">-1</div><div class="rel">耗</div></td>
+        <td class="neg"><div class="val">-2</div><div class="rel">克</div></td>
+        <td class="pos"><div class="val">+2</div><div class="rel">生</div></td>
+        <td class="pos"><div class="val">+1</div><div class="rel">助</div></td>
+        <td class="neg"><div class="val">-1</div><div class="rel">泄</div></td>
+      </tr>
+      <tr>
+        <th class="row-hd">💧 水</th>
+        <td class="neg"><div class="val">-1</div><div class="rel">泄</div></td>
+        <td class="neg"><div class="val">-1</div><div class="rel">耗</div></td>
+        <td class="neg"><div class="val">-2</div><div class="rel">克</div></td>
+        <td class="pos"><div class="val">+2</div><div class="rel">生</div></td>
+        <td class="pos"><div class="val">+1</div><div class="rel">助</div></td>
+      </tr>
+    </table>
+    <div class="matrix-note">
+      <b style="color:var(--gold)">横排</b>为外力（动）→ 作用于 <b style="color:var(--fire-l)">竖排</b>静物（静）<br>
+      <span style="color:var(--wood)">+2生 +1助</span> | <span style="color:var(--fire)">-1泄 -1耗 -2克</span>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin:1rem 0;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+    <button class="rules-entry-btn" onclick="openRulesModal()">📖 运算规则</button>
+    <button class="rules-entry-btn" style="background:linear-gradient(135deg,rgba(30,144,255,.25),rgba(34,139,34,.18))" onclick="showBasic()">🔮 一维初级运算</button>
+    <button class="rules-entry-btn" style="background:linear-gradient(135deg,rgba(212,175,55,.35),rgba(220,20,60,.28))" onclick="showAdvanced()">⚡ 一维高级运算</button>
+  </div>
+</div>
+
+<!-- 一维高级运算页面 -->
+<div id="advancedMenu" style="display:none">
+  <div style="text-align:center;margin-bottom:1rem">
+    <button onclick="show('menu')" style="padding:.5rem 1.5rem;background:linear-gradient(135deg,rgba(212,175,55,.3),rgba(212,175,55,.15));border:1px solid rgba(212,175,55,.4);border-radius:8px;color:var(--gold);cursor:pointer;font-size:.85rem">🏠 返回主页</button>
+  </div>
+  <h2 style="text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',cursive;font-size:1.6rem;margin-bottom:.5rem">⚡ 一维高级运算</h2>
+  <p style="text-align:center;color:var(--txt2);font-size:.8rem;margin-bottom:1rem">通过同一外力若干次对静物的同时作用，达成目标</p>
+  <div class="vols" id="advancedVols"></div>
+</div>
+
+<!-- 初级运算页面 -->
+<div id="basicMenu" style="display:none">
+  <div style="text-align:center;margin-bottom:1rem">
+    <button onclick="show('menu')" style="padding:.5rem 1.5rem;background:linear-gradient(135deg,rgba(30,144,255,.3),rgba(30,144,255,.15));border:1px solid rgba(30,144,255,.4);border-radius:8px;color:#4da6ff;cursor:pointer;font-size:.85rem">🏠 返回主页</button>
+  </div>
+  <h2 style="text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',cursive;font-size:1.6rem;margin-bottom:.5rem">🔮 一维初级运算</h2>
+  <p style="text-align:center;color:var(--txt2);font-size:.8rem;margin-bottom:1rem">静物逐一受外力作用，计算最终分值</p>
+  <div class="basic-vols" id="basicVols"></div>
+</div>
+
+<!-- 初级运算游戏页 -->
+<div id="basicGame" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding:0 .5rem">
+    <span class="back-link" onclick="show('menu')">← 返回主页</span>
+    <span class="back-link" onclick="showBasic()">← 返回关卡</span>
+  </div>
+  <div id="basicContent"></div>
+</div>
+</div>
+
+<!-- 运算规则弹窗 -->
+<div class="modal" id="rulesModal">
+  <div class="modal-box" style="max-width:520px;max-height:85vh;overflow-y:auto">
+    <div class="modal-hd">
+      <span>📖 运算规则</span>
+      <span class="modal-close" onclick="closeRulesModal()">✕</span>
+    </div>
+    <div class="rules-content" style="padding:1rem">
+      <!-- 一维初级运算 -->
+      <div class="rule-section">
+        <h3 style="color:var(--water);margin:0 0 .5rem">🔮 一维初级运算</h3>
+        <p style="color:var(--txt2);font-size:.82rem;margin:0 0 .6rem">静物逐一受不同外力作用，根据五行生克关系计算最终分值。</p>
+        <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:.7rem;margin-bottom:.6rem">
+          <div style="font-size:.78rem;color:var(--txt2);margin-bottom:.3rem"><b>运算示例</b>（水5土4金6，遇火金木）</div>
+          <table style="width:100%;font-size:.75rem;border-collapse:collapse;line-height:1.6">
+            <tr><th></th><th>初始</th><th>遇火</th><th>遇金</th><th>遇木</th><th style="color:var(--gold)">最终</th></tr>
+            <tr><td style="color:var(--water)">💧水5</td><td>5</td><td>-1=4</td><td>+2=6</td><td>-1=5</td><td><b>5</b></td></tr>
+            <tr><td style="color:var(--earth)">⛰️土4</td><td>4</td><td>+2=6</td><td>-1=5</td><td>-2=3</td><td><b>3</b></td></tr>
+            <tr><td style="color:var(--gold)">🪙金6</td><td>6</td><td>-2=4</td><td>+1=5</td><td>-1=4</td><td><b>4</b></td></tr>
+          </table>
+        </div>
+        <div style="font-size:.78rem;color:var(--txt2);line-height:1.6">
+          <b>运算方法</b>：每个静物独立计算，逐个受外力影响。<br>
+          • 遇生(+2)：被生者力量增强<br>
+          • 遇助(+1)：同类相助<br>
+          • 遇泄/耗(-1)：力量流失<br>
+          • 遇克(-2)：力量大幅削弱
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:1rem 0">
+
+      <!-- 分值平衡法 -->
+      <div class="rule-section">
+        <h3 style="color:var(--gold);margin:0 0 .5rem">⚖️ 分值平衡法</h3>
+        <p style="color:var(--txt2);font-size:.82rem;margin:0 0 .6rem">通过同一外力若干次对两个或多个静物的同时作用，使所有静物的分值变为<b>相同数值</b>。</p>
+        <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:.7rem;margin-bottom:.6rem">
+          <div style="font-size:.78rem;color:var(--txt2);margin-bottom:.3rem"><b>运算示例</b>（金、木两元素）</div>
+          <div style="font-size:.82rem;line-height:1.8">
+            <div>初始：金6 木3</div>
+            <div>施外力 <b style="color:var(--water)">💧水</b> → 金受生+2=8，木受泄-1=2</div>
+            <div>施外力 <b style="color:var(--fire)">🔥火</b> → 金受克-2=6，木受泄-1=1</div>
+            <div>施外力 <b style="color:var(--wood)">🌳木</b> → 金受耗-1=5，木受助+1=2</div>
+            <div>施外力 <b style="color:var(--earth)">⛰️土</b> → 金受生+2=7，木受克-2=0</div>
+            <div style="margin-top:.3rem;color:var(--gold)">目标：找一组合适的外力序列，使 金=木</div>
+          </div>
+        </div>
+        <div style="font-size:.78rem;color:var(--txt2);line-height:1.6">
+          <b>解题思路</b>：观察两元素差值，利用生克关系逐步缩小差距。<br>
+          • 差值大 → 用「生」(+2)或「克」(-2)快速调整<br>
+          • 差值小 → 用「助」(+1)或「泄/耗」(-1)微调<br>
+          • 三元素以上 → 使任意两元素分值相等即为平衡
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:1rem 0">
+
+      <!-- 分值归零法 -->
+      <div class="rule-section">
+        <h3 style="color:var(--fire-l);margin:0 0 .5rem">🎯 分值归零法</h3>
+        <p style="color:var(--txt2);font-size:.82rem;margin:0 0 .6rem">通过同一外力若干次对两个或多个静物的同时作用，使所有静物的分值都变为<b>零</b>。</p>
+        <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:.7rem;margin-bottom:.6rem">
+          <div style="font-size:.78rem;color:var(--txt2);margin-bottom:.3rem"><b>运算示例</b>（金、木两元素）</div>
+          <div style="font-size:.82rem;line-height:1.8">
+            <div>初始：金4 木2</div>
+            <div>施外力 <b style="color:var(--fire)">🔥火</b> → 金4-2=2，木2-1=1</div>
+            <div>施外力 <b style="color:var(--fire)">🔥火</b> → 金2-2=0，木1-1=0</div>
+            <div style="margin-top:.3rem;color:var(--fire-l)">✅ 金=0，木=0，归零成功！</div>
+          </div>
+        </div>
+        <div style="font-size:.78rem;color:var(--txt2);line-height:1.6">
+          <b>解题思路</b>：题目由倒推法生成，确保每题有解。<br>
+          • 先把分值较大的元素用「克」(-2)大幅降低<br>
+          • 再用「泄/耗」(-1)微调至零<br>
+          • 所有元素必须同时归零才算通关<br>
+          • 步数越多难度越大，最多可达10步以上
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:1rem 0">
+
+      <!-- 关系说明 -->
+      <div class="rule-section">
+        <h3 style="color:var(--txt1);margin:0 0 .5rem">🔗 五行关系速查</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;font-size:.8rem">
+          <div style="background:rgba(34,139,34,.12);border-radius:6px;padding:.5rem;text-align:center"><b style="color:var(--wood)">+2 生</b><br><span style="color:var(--txt2);font-size:.72rem">木生火·火生土·土生金·金生水·水生木</span></div>
+          <div style="background:rgba(34,139,34,.08);border-radius:6px;padding:.5rem;text-align:center"><b style="color:var(--wood)">+1 助</b><br><span style="color:var(--txt2);font-size:.72rem">同类相助，遇自身+1</span></div>
+          <div style="background:rgba(220,20,60,.08);border-radius:6px;padding:.5rem;text-align:center"><b style="color:var(--fire)">-1 泄/耗</b><br><span style="color:var(--txt2);font-size:.72rem">我生者为泄，生我者耗</span></div>
+          <div style="background:rgba(220,20,60,.12);border-radius:6px;padding:.5rem;text-align:center"><b style="color:var(--fire)">-2 克</b><br><span style="color:var(--txt2);font-size:.72rem">木克土·土克水·水克火·火克金·金克木</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="game" id="game">
+  <div class="gtop">
+    <div class="ginfo">
+      <div class="gnum" id="gnum">1</div>
+      <div>
+        <div class="gtitle" id="gtitle"></div>
+        <div class="gdesc" id="gdesc"></div>
+      </div>
+    </div>
+    <div class="gscore">
+      <div class="gslabel">总得分</div>
+      <div class="gsval" id="gscore">0</div>
+    </div>
+  </div>
+
+  <div class="target" id="target"></div>
+  <div class="elems" id="elems"></div>
+  <div class="stepinfo">已用 <b id="stepcount">0</b> 步 | 参考 <b id="optsteps">?</b> 步</div>
+
+  <div class="sel" id="sel"><span class="sel-ph">点击五行按钮施加外力...</span></div>
+
+  <div class="forces" id="forces"></div>
+
+  <div class="acts">
+    <button class="abtn" onclick="undo()" id="undoBtn" disabled>撤销</button>
+    <button class="abtn" onclick="reset()">重来</button>
+    <button class="abtn hint" onclick="showHint()" id="hintBtn">提示</button>
+    <button class="abtn primary" onclick="submit()" id="submitBtn" disabled>提交</button>
+  </div>
+
+  <div class="result" id="result">
+    <div class="ricon" id="ricon">✨</div>
+    <div class="rtitle ok" id="rtitle"></div>
+    <div class="rmsg" id="rmsg"></div>
+    <div class="rscore" id="rscore"></div>
+  </div>
+
+  <div class="rules" id="rulesPanel">
+    <div class="rules-hd" id="rulesHd" onclick="toggleRules()">
+      <span>📜 查看运算规则</span><span class="arrow">▼</span>
+    </div>
+    <div class="rules-bd" id="rulesBd"></div>
+  </div>
+
+  <!-- 题号导航点 -->
+  <div style="display:flex;justify-content:center;gap:.25rem;margin-top:.6rem" id="pgDots"></div>
+
+  <!-- 底部导航 -->
+  <div class="game-nav" id="gameNav">
+    <button class="nav-btn" onclick="navLevel(-1)" id="prevBtn">⬅ 上一题</button>
+    <button class="nav-btn sel" id="selectLevelBtn">📋 选关</button>
+    <button class="nav-btn" onclick="goBack()">🏠 主页</button>
+    <button class="nav-btn" onclick="navLevel(1)" id="nextBtn">下一题 ➡</button>
+  </div>
+</div>
+</div>
+
+<!-- 关卡选择弹窗 -->
+<div class="modal" id="levelModal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="modal-title" id="modalTitle"></span>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-info" id="modalInfo"></div>
+    <div class="modal-els" id="modalEls"></div>
+    <div class="level-grid" id="levelGrid"></div>
+  </div>
+</div>
+
+<script>
+// ===== 五行元素 =====
+const EL = ['木','火','土','金','水'];
+const ICONS = {'木':'🌳','火':'🔥','土':'⛰️','金':'🪙','水':'💧'};
+const HEX = {'木':'#228B22','火':'#DC143C','土':'#8B4513','金':'#D4AF37','水':'#1E90FF'};
+
+// ===== 核心：5x5 生克矩阵（带关系标注）=====
+// T[静物][外力] = { 变化值, 关系名 }
+const T = {
+  '木': { '木':{v:+1,r:'助'}, '火':{v:-1,r:'泄'}, '土':{v:-1,r:'耗'}, '金':{v:-2,r:'克'}, '水':{v:+2,r:'生'} },
+  '火': { '木':{v:+2,r:'生'}, '火':{v:+1,r:'助'}, '土':{v:-1,r:'泄'}, '金':{v:-1,r:'耗'}, '水':{v:-2,r:'克'} },
+  '土': { '木':{v:-2,r:'克'}, '火':{v:+2,r:'生'}, '土':{v:+1,r:'助'}, '金':{v:-1,r:'泄'}, '水':{v:-1,r:'耗'} },
+  '金': { '木':{v:-1,r:'耗'}, '火':{v:-2,r:'克'}, '土':{v:+2,r:'生'}, '金':{v:+1,r:'助'}, '水':{v:-1,r:'泄'} },
+  '水': { '木':{v:-1,r:'泄'}, '火':{v:-1,r:'耗'}, '土':{v:-2,r:'克'}, '金':{v:+2,r:'生'}, '水':{v:+1,r:'助'} }
+};
+
+// ===== 关卡配置 =====
+const VOLS = [
+  { id:'v1', name:'双元素平衡', desc:'使两个元素分值相等', els:['金','木'], goal:'balance', minS:1, maxS:3, req:0, emoji:'🌱' },
+  { id:'v2', name:'双元素归零', desc:'使两个元素分值归零', els:['金','木'], goal:'zero', minS:2, maxS:4, req:5, emoji:'🔥' },
+  { id:'v3', name:'三元素平衡', desc:'使木火土三元素平衡', els:['木','火','土'], goal:'balance', minS:2, maxS:4, req:5, emoji:'⚡' },
+  { id:'v4', name:'三元素归零', desc:'使木火土三元素归零', els:['木','火','土'], goal:'zero', minS:2, maxS:5, req:5, emoji:'💫' },
+  { id:'v5', name:'四元素平衡', desc:'使四元素分值相等', els:['木','火','土','金'], goal:'balance', minS:3, maxS:5, req:5, emoji:'🌟' },
+  { id:'v6', name:'四元素归零', desc:'使四元素分值归零', els:['木','火','土','金'], goal:'zero', minS:3, maxS:6, req:5, emoji:'✨' },
+  { id:'v7', name:'五行平衡', desc:'使五行分值全相等', els:['木','火','土','金','水'], goal:'balance', minS:4, maxS:7, req:5, emoji:'🏆' },
+  { id:'v8', name:'五行归零', desc:'五行齐归，万物归虚', els:['木','火','土','金','水'], goal:'zero', minS:4, maxS:8, req:5, emoji:'🌌' }
+];
+
+// ===== 初级运算关卡配置 =====
+const BASIC_VOLS = [
+  { id:'b1', name:'单元素运算', desc:'一个静物受外力作用', els:['水'], numForces:3, emoji:'💧' },
+  { id:'b2', name:'双元素运算', desc:'两个静物同时受外力', els:['水','土'], numForces:3, emoji:'🌊' },
+  { id:'b3', name:'三元素运算', desc:'三个静物同时受外力', els:['水','土','金'], numForces:4, emoji:'🔥' },
+  { id:'b4', name:'四元素运算', desc:'四个静物同时受外力', els:['水','土','金','木'], numForces:4, emoji:'⚡' },
+  { id:'b5', name:'五行运算', desc:'五行同时受外力作用', els:['木','火','土','金','水'], numForces:5, emoji:'🌌' }
+];
+
+// 初级运算状态
+let BS = { volIdx:-1, lvlIdx:-1, puzzles:{}, done:{}, currentPz: null };
+
+// ===== 游戏状态 =====
+let S = { volIdx:-1, lvlIdx:-1, forces:[], curVals:{}, puzzles:{}, done:{}, totalScore:0, hintIdx:0 };
+
+// ===== 题目生成（倒推法） =====
+function genPuzzle(vol, lvlIdx) {
+  const els = vol.els;
+  const numSteps = vol.minS + Math.floor((vol.maxS - vol.minS) * lvlIdx / 9);
+
+  for (let attempt = 0; attempt < 500; attempt++) {
+    let vals = {};
+    if (vol.goal === 'zero') { els.forEach(e => vals[e] = 0); }
+    else { const v = 2 + Math.floor(Math.random() * 4); els.forEach(e => vals[e] = v); }
+
+    const solution = [];
+    for (let i = 0; i < numSteps; i++) {
+      const f = EL[Math.floor(Math.random() * 5)];
+      solution.push(f);
+      els.forEach(e => { vals[e] -= T[e][f].v; });
+    }
+
+    const allPos = els.every(e => vals[e] >= 1);
+    const allSmall = els.every(e => vals[e] <= 15);
+    if (!allPos || !allSmall) continue;
+
+    if (vol.goal === 'balance') { if ([...new Set(els.map(e => vals[e]))].length === 1) continue; }
+    else { if (els.every(e => vals[e] === 0)) continue; }
+
+    let test = {...vals};
+    for (const f of solution) { els.forEach(e => { test[e] += T[e][f].v; }); }
+    let ok = vol.goal === 'balance' ? els.every(e => test[e] === test[els[0]]) : els.every(e => test[e] === 0);
+    if (!ok) continue;
+
+    return { init: vals, solution: solution, optSteps: solution.length };
+  }
+  let fb = {}; els.forEach((e,i) => fb[e] = 3 + i);
+  return { init: fb, solution: ['木'], optSteps: 1 };
+}
+
+function getPuzzles(vol) {
+  if (!S.puzzles[vol.id]) {
+    S.puzzles[vol.id] = [];
+    for (let i = 0; i < 10; i++) S.puzzles[vol.id].push(genPuzzle(vol, i));
+  }
+  return S.puzzles[vol.id];
+}
+
+function save() { localStorage.setItem('wuxing1d_v5', JSON.stringify({ done:S.done, totalScore:S.totalScore, puzzles:S.puzzles })); }
+function load() { try { const d = JSON.parse(localStorage.getItem('wuxing1d_v5')); if(d){ S.done=d.done||{}; S.totalScore=d.totalScore||0; S.puzzles=d.puzzles||{}; } } catch(e){} }
+
+// ===== 渲染 =====
+function starsHtml(n) { return [0,1,2].map(i => i < n ? '<span class="star-on">★</span>' : '<span class="star-off">★</span>').join(''); }
+
+function renderMenu() {
+  const container = document.getElementById('vols');
+  container.innerHTML = '';
+  VOLS.forEach((v, vi) => {
+    const cnt = Object.keys(S.done[v.id] || {}).length;
+    const div = document.createElement('div');
+    div.className = 'vcard';
+    div.innerHTML = `<div class="vbadge">${v.emoji} 可挑战</div>
+      <div class="vname">${v.name}</div>
+      <div class="vdesc">${v.desc}</div>
+      <div class="velems">${v.els.map(e => `<span style="color:${HEX[e]}">${ICONS[e]}${e}</span>`).join('')}</div>
+      <div class="vprog"><div class="pbar"><div class="pfill" style="width:${cnt*10}%"></div></div><div class="pscore">${cnt}/10</div></div>`;
+    div.addEventListener('click', function() { openLevelPicker(vi); });
+    container.appendChild(div);
+  });
+}
+
+function renderLevels(vi) {
+  const vol = VOLS[vi];
+  document.getElementById('vols').innerHTML = `<div style="text-align:center;margin-bottom:.6rem">
+    <span class="back-link" onclick="renderMenu()">← 返回总览</span>
+    <div class="vname" style="margin:.3rem 0">${vol.emoji} ${vol.name}</div>
+    <div style="color:var(--txt2);font-size:.7rem">${vol.desc}</div>
+    <div style="margin-top:.2rem;font-size:.7rem">${vol.els.map(e => `<span style="color:${HEX[e]}">${ICONS[e]}${e}</span>`).join(' ')}</div>
+  </div><div class="levels show">${[...Array(10)].map((_, i) => {
+    const d = S.done[vol.id] && S.done[vol.id][i];
+    const unlocked = i === 0 || (S.done[vol.id] && S.done[vol.id][i-1]);
+    return `<div class="lbtn ${unlocked?'':'locked'} ${d?'done':''} ${unlocked&&!d?'current':''}" onclick="${unlocked?'startLevel('+vi+','+i+')':''}">
+      <div class="lnum">${i+1}</div><div class="lstars">${d ? starsHtml(d.stars) : (unlocked?'☆☆☆':'🔒')}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function show(id) {
+  document.getElementById('menu').style.display = id === 'menu' ? '' : 'none';
+  document.getElementById('game').classList.toggle('show', id === 'game');
+  document.getElementById('bbtn').classList.toggle('show', id === 'game');
+}
+
+// ===== 游戏逻辑 =====
+function selectVol(vi) { openLevelPicker(vi); }
+
+function openRulesModal() { document.getElementById('rulesModal').classList.add('show'); }
+function closeRulesModal() { document.getElementById('rulesModal').classList.remove('show'); }
+
+function openLevelPicker(vi) {
+  S.volIdx = vi;
+  const vol = VOLS[vi];
+  document.getElementById('modalTitle').textContent = vol.emoji + ' ' + vol.name;
+  document.getElementById('modalInfo').textContent = vol.desc;
+  document.getElementById('modalEls').innerHTML = vol.els.map(e => 
+    `<span style="color:${HEX[e]}">${ICONS[e]}${e}</span>`
+  ).join(' ');
+  
+  const grid = document.getElementById('levelGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const d = S.done[vol.id] && S.done[vol.id][i];
+    const stars = d ? starsHtml(d.stars) : '☆☆☆';
+    
+    const btn = document.createElement('div');
+    btn.className = `lp-btn${d?' done':''}`;
+    btn.innerHTML = `<div class="lp-num">${i+1}</div><div class="lp-stars">${stars}</div>`;
+    
+    const levelIdx = i;
+    btn.addEventListener('click', function() {
+      startLevel(vi, levelIdx);
+    });
+    
+    grid.appendChild(btn);
+  }
+  
+  document.getElementById('levelModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('levelModal').classList.remove('show');
+}
+
+function navLevel(dir) {
+  const newIdx = S.lvlIdx + dir;
+  if (newIdx < 0 || newIdx > 9) return;
+  startLevel(S.volIdx, newIdx);
+}
+
+function startLevel(vi, li) {
+  closeModal();
+  S.volIdx = vi; S.lvlIdx = li; S.forces = []; S.hintIdx = 0;
+  const vol = VOLS[vi], pz = getPuzzles(vol)[li];
+  S.curVals = {...pz.init};
+  show('game');
+  document.getElementById('gnum').textContent = li + 1;
+  document.getElementById('gtitle').textContent = vol.name;
+  document.getElementById('gdesc').textContent = vol.goal === 'balance' ? '使所有元素分值相等' : '使所有元素分值归零';
+  document.getElementById('gscore').textContent = S.totalScore;
+  document.getElementById('target').innerHTML = vol.goal === 'balance'
+    ? `🎯 目标：使 ${vol.els.map(e => `<span style="color:${HEX[e]}">${ICONS[e]}${e}</span>`).join(' ')} 分值 <span>相等</span>`
+    : `🎯 目标：使 ${vol.els.map(e => `<span style="color:${HEX[e]}">${ICONS[e]}${e}</span>`).join(' ')} 分值 <span>归零</span>`;
+  renderElems();
+  document.getElementById('forces').innerHTML = EL.map(f => {
+    const tips = vol.els.map(e => `<span style="color:${HEX[e]}">${ICONS[e]}${T[e][f].v>=0?'+':''}${T[e][f].v}(${T[e][f].r})</span>`).join(' ');
+    return `<button class="fbtn" data-f="${f}" onclick="applyForce('${f}')">${ICONS[f]}<div class="ftip">${tips}</div></button>`;
+  }).join('');
+  document.getElementById('sel').innerHTML = '<span class="sel-ph">点击五行按钮施加外力...</span>';
+  document.getElementById('stepcount').textContent = '0';
+  document.getElementById('optsteps').textContent = pz.optSteps;
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('hintBtn').disabled = false;
+  updateBtns();
+  renderRulesTable(vol);
+  renderPgDots();
+}
+
+function renderElems() {
+  const vol = VOLS[S.volIdx];
+  document.getElementById('elems').innerHTML = vol.els.map(e => {
+    const v = S.curVals[e];
+    return `<div class="elem" id="e_${e}"><div class="eicon">${ICONS[e]}</div><div class="ename">${e}</div><div class="eval ${v>0?'eval-pos':(v<0?'eval-neg':'eval-zero')}" id="v_${e}">${v}</div></div>`;
+  }).join('');
+}
+
+function updateElems() {
+  const vol = VOLS[S.volIdx];
+  vol.els.forEach(e => {
+    const el = document.getElementById('v_' + e);
+    if (!el) return;
+    const v = S.curVals[e];
+    el.textContent = v;
+    el.classList.remove('eval-pos','eval-neg','eval-zero');
+    el.classList.add(v > 0 ? 'eval-pos' : (v < 0 ? 'eval-neg' : 'eval-zero'));
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+    document.getElementById('e_'+e)?.classList.remove('matched');
+  });
+  if (vol.goal === 'balance') {
+    if ([...new Set(vol.els.map(e => S.curVals[e]))].length === 1) vol.els.forEach(e => document.getElementById('e_'+e)?.classList.add('matched'));
+  } else {
+    if (vol.els.every(e => S.curVals[e] === 0)) vol.els.forEach(e => document.getElementById('e_'+e)?.classList.add('matched'));
+  }
+}
+
+function applyForce(f) {
+  const vol = VOLS[S.volIdx];
+  S.forces.push(f);
+  vol.els.forEach(e => { S.curVals[e] += T[e][f].v; });
+  updateElems();
+  document.getElementById('sel').innerHTML = S.forces.map((sf, i) => (i > 0 ? '<span class="sel-arrow">→</span>' : '') + `<div class="sel-f" data-c="${sf}">${ICONS[sf]}</div>`).join('');
+  document.getElementById('stepcount').textContent = S.forces.length;
+  updateBtns();
+  document.getElementById('result').classList.remove('show');
+}
+
+function undo() {
+  if (S.forces.length === 0) return;
+  const vol = VOLS[S.volIdx], f = S.forces.pop();
+  vol.els.forEach(e => { S.curVals[e] -= T[e][f].v; });
+  updateElems();
+  document.getElementById('sel').innerHTML = S.forces.length === 0 ? '<span class="sel-ph">点击五行按钮施加外力...</span>' : S.forces.map((sf, i) => (i > 0 ? '<span class="sel-arrow">→</span>' : '') + `<div class="sel-f" data-c="${sf}">${ICONS[sf]}</div>`).join('');
+  document.getElementById('stepcount').textContent = S.forces.length;
+  updateBtns();
+  document.getElementById('result').classList.remove('show');
+}
+
+function reset() {
+  const vol = VOLS[S.volIdx], pz = getPuzzles(vol)[S.lvlIdx];
+  S.forces = []; S.curVals = {...pz.init}; S.hintIdx = 0;
+  renderElems();
+  document.getElementById('sel').innerHTML = '<span class="sel-ph">点击五行按钮施加外力...</span>';
+  document.getElementById('stepcount').textContent = '0';
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('hintBtn').disabled = false;
+  updateBtns();
+}
+
+function updateBtns() {
+  document.getElementById('undoBtn').disabled = S.forces.length === 0;
+  document.getElementById('submitBtn').disabled = S.forces.length === 0;
+}
+
+function submit() {
+  const vol = VOLS[S.volIdx];
+  let success = vol.goal === 'balance' ? [...new Set(vol.els.map(e => S.curVals[e]))].length === 1 : vol.els.every(e => S.curVals[e] === 0);
+  document.getElementById('result').classList.add('show');
+  if (success) {
+    const pz = getPuzzles(vol)[S.lvlIdx], steps = S.forces.length, opt = pz.optSteps;
+    let stars = steps <= opt ? 3 : (steps <= opt + 2 ? 2 : 1);
+    const pts = stars * 100 + (vol.els.length - 2) * 50;
+    S.totalScore += pts;
+    if (!S.done[vol.id]) S.done[vol.id] = {};
+    if (!S.done[vol.id][S.lvlIdx] || S.done[vol.id][S.lvlIdx].stars < stars) S.done[vol.id][S.lvlIdx] = { stars, steps };
+    document.getElementById('ricon').textContent = stars === 3 ? '🌟' : stars === 2 ? '✨' : '🎯';
+    document.getElementById('rtitle').textContent = stars === 3 ? '完美通关' : stars === 2 ? '修行成功' : '勉强过关';
+    document.getElementById('rtitle').className = 'rtitle ok';
+    document.getElementById('rmsg').textContent = `用了 ${steps} 步${stars<3?' (参考'+opt+'步)':''}`;
+    document.getElementById('rscore').textContent = '+' + pts + ' 分';
+  } else {
+    document.getElementById('ricon').textContent = '💫';
+    document.getElementById('rtitle').textContent = '继续修炼';
+    document.getElementById('rtitle').className = 'rtitle fail';
+    document.getElementById('rmsg').textContent = vol.goal === 'balance' ? '分值尚未相等' : '分值尚未归零';
+    document.getElementById('rscore').textContent = '';
+  }
+  document.getElementById('gscore').textContent = S.totalScore;
+  save();
+}
+
+function showHint() {
+  const vol = VOLS[S.volIdx], pz = getPuzzles(vol)[S.lvlIdx];
+  if (!pz || !pz.solution) return;
+  S.hintIdx = Math.min(S.hintIdx + 1, pz.solution.length);
+  S.curVals = {...pz.init}; S.forces = pz.solution.slice(0, S.hintIdx);
+  for (const f of S.forces) vol.els.forEach(e => { S.curVals[e] += T[e][f].v; });
+  updateElems();
+  document.getElementById('sel').innerHTML = S.forces.map((sf, i) => (i > 0 ? '<span class="sel-arrow">→</span>' : '') + `<div class="sel-f" data-c="${sf}">${ICONS[sf]}</div>`).join('');
+  document.getElementById('stepcount').textContent = S.forces.length;
+  document.getElementById('hintBtn').disabled = S.hintIdx >= pz.solution.length;
+  updateBtns();
+}
+
+function goBack() { 
+  closeModal();
+  show('menu'); 
+  renderMenu(); 
+}
+function toggleRules() { document.getElementById('rulesHd').classList.toggle('open'); document.getElementById('rulesBd').classList.toggle('show'); }
+
+function renderRulesTable(vol) {
+  document.getElementById('rulesBd').innerHTML = `<table class="mtable" style="font-size:.7rem"><tr><th></th>${EL.map(f=>`<th>${ICONS[f]}${f}</th>`).join('')}</tr>${vol.els.map(e=>`<tr><th style="color:${HEX[e]}">${ICONS[e]}${e}</th>${EL.map(f=>{const t=T[e][f];return`<td class="${t.v>0?'pos':'neg'}"><div class="val">${t.v>=0?'+':''}${t.v}</div><div class="rel">${t.r}</div></td>`;}).join('')}</tr>`).join('')}</table>`;
+}
+
+function renderPgDots() {
+  const vol = VOLS[S.volIdx];
+  const vi = S.volIdx;
+  const container = document.getElementById('pgDots');
+  container.innerHTML = '';
+  
+  for (let i = 0; i < 10; i++) {
+    const d = S.done[vol.id] && S.done[vol.id][i];
+    
+    const dot = document.createElement('div');
+    dot.className = `pg-dot${i===S.lvlIdx?' active':''}${d?' done':''}`;
+    dot.style.cursor = 'pointer';
+    
+    const levelIdx = i;
+    dot.addEventListener('click', function() {
+      startLevel(vi, levelIdx);
+    });
+    
+    container.appendChild(dot);
+  }
+}
+
+load(); renderMenu();
+
+// ===== 一维高级运算函数 =====
+function showAdvanced() {
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('advancedMenu').style.display = '';
+  document.getElementById('basicMenu').style.display = 'none';
+  document.getElementById('basicGame').style.display = 'none';
+  renderAdvancedMenu();
+}
+
+function renderAdvancedMenu() {
+  const container = document.getElementById('advancedVols');
+  container.innerHTML = '';
+  VOLS.forEach((v, vi) => {
+    const cnt = Object.keys(S.done[v.id] || {}).length;
+    const div = document.createElement('div');
+    div.className = 'vcard';
+    div.innerHTML = `<div class="vbadge">${v.emoji} 可挑战</div>
+      <div class="vname">${v.name}</div>
+      <div class="vdesc">${v.desc}</div>
+      <div class="velems">${v.els.map(e => `<span style="color:${HEX[e]}">${ICONS[e]}${e}</span>`).join('')}</div>
+      <div class="vprog"><div class="pbar"><div class="pfill" style="width:${cnt*10}%"></div></div><div class="pscore">${cnt}/10</div></div>`;
+    div.addEventListener('click', function() { openLevelPicker(vi); });
+    container.appendChild(div);
+  });
+}
+
+// ===== 初级运算函数 =====
+function showBasic() {
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('advancedMenu').style.display = 'none';
+  document.getElementById('basicMenu').style.display = '';
+  document.getElementById('basicGame').style.display = 'none';
+  renderBasicMenu();
+}
+
+function renderBasicMenu() {
+  const container = document.getElementById('basicVols');
+  container.innerHTML = '';
+  BASIC_VOLS.forEach((v, vi) => {
+    const cnt = Object.keys(BS.done[v.id] || {}).length;
+    const div = document.createElement('div');
+    div.className = 'vcard';
+    div.innerHTML = `<div class="vbadge">${v.emoji} 可挑战</div>
+      <div class="vname">${v.name}</div>
+      <div class="vdesc">${v.desc}</div>
+      <div class="velems">${v.els.map(e => `<span style="color:${HEX[e]}">${ICONS[e]}${e}</span>`).join('')}</div>
+      <div class="vprog"><div class="pbar"><div class="pfill" style="width:${cnt*10}%"></div></div><div class="pscore">${cnt}/10</div></div>`;
+    div.addEventListener('click', function() { openBasicLevelPicker(vi); });
+    container.appendChild(div);
+  });
+}
+
+function genBasicPuzzle(vol, lvlIdx) {
+  const els = vol.els;
+  const numForces = vol.numForces + Math.floor(lvlIdx / 3);
+  const init = {};
+  els.forEach(e => init[e] = 3 + Math.floor(Math.random() * 8));
+  const forces = [];
+  for (let i = 0; i < numForces; i++) {
+    forces.push(EL[Math.floor(Math.random() * 5)]);
+  }
+  const result = {};
+  els.forEach(e => {
+    result[e] = init[e];
+    forces.forEach(f => { result[e] += T[e][f].v; });
+  });
+  return { init, forces, result };
+}
+
+function openBasicLevelPicker(vi) {
+  BS.volIdx = vi;
+  const vol = BASIC_VOLS[vi];
+  const modal = document.getElementById('levelModal');
+  document.getElementById('modalTitle').textContent = vol.emoji + ' ' + vol.name;
+  document.getElementById('modalInfo').textContent = vol.desc;
+  document.getElementById('modalEls').innerHTML = vol.els.map(e => `<span style="color:${HEX[e]}">${ICONS[e]}${e}</span>`).join(' ');
+  const grid = document.getElementById('levelGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const d = BS.done[vol.id] && BS.done[vol.id][i];
+    const btn = document.createElement('div');
+    btn.className = `lp-btn${d?' done':''}`;
+    btn.innerHTML = `<div class="lp-num">${i+1}</div><div class="lp-stars">${d?'✓':'☆'}</div>`;
+    const lvlIdx = i;
+    btn.addEventListener('click', function() { startBasicLevel(vi, lvlIdx); });
+    grid.appendChild(btn);
+  }
+  modal.classList.add('show');
+}
+
+function startBasicLevel(vi, li) {
+  closeModal();
+  BS.lvlIdx = li;
+  const vol = BASIC_VOLS[vi];
+  const pz = genBasicPuzzle(vol, li);
+  BS.currentPz = pz;
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('basicMenu').style.display = 'none';
+  document.getElementById('basicGame').style.display = '';
+  renderBasicGame(vol, pz);
+}
+
+function renderBasicGame(vol, pz) {
+  const container = document.getElementById('basicContent');
+  const forceStr = pz.forces.map(f => ICONS[f]).join(' ');
+  let html = `
+    <div style="background:var(--card);border:1px solid rgba(212,175,55,.15);border-radius:16px;padding:1.2rem">
+      <div style="text-align:center;margin-bottom:1rem">
+        <div style="color:var(--gold);font-family:'Ma Shan Zheng',cursive;font-size:1.3rem">${vol.emoji} ${vol.name}</div>
+        <div style="color:var(--txt2);font-size:.75rem;margin-top:.2rem">第 ${BS.lvlIdx+1} 关</div>
+      </div>
+      <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:1rem;margin-bottom:1rem">
+        <div style="text-align:center;margin-bottom:.8rem">
+          <span style="color:var(--txt2);font-size:.8rem">初始分值</span>
+        </div>
+        <div style="display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap">
+          ${vol.els.map(e => `<div style="text-align:center"><div style="font-size:1.5rem">${ICONS[e]}</div><div style="color:${HEX[e]};font-size:1.2rem;font-family:'Ma Shan Zheng',cursive">${pz.init[e]}</div><div style="font-size:.7rem;color:var(--txt2)">${e}</div></div>`).join('')}
+        </div>
+      </div>
+      <div style="text-align:center;margin-bottom:1rem">
+        <div style="color:var(--gold);font-size:.9rem;margin-bottom:.3rem">外力序列</div>
+        <div style="font-size:1.8rem;letter-spacing:.2em">${forceStr}</div>
+      </div>
+      <div style="text-align:center;margin-bottom:1rem">
+        <div style="color:var(--txt2);font-size:.95rem">请计算每个静物经过所有外力作用后的最终分值，点击答案框加减选择答案</div>
+      </div>
+      <div id="basicAnswer" style="display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem">
+        ${vol.els.map(e => `<div style="text-align:center"><div style="font-size:1.5rem">${ICONS[e]}</div><input type="number" id="ans_${e}" style="width:60px;text-align:center;font-size:1.2rem;background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.3);border-radius:6px;padding:.3rem;color:var(--txt);font-family:'Ma Shan Zheng',cursive" placeholder="?"><div style="font-size:.7rem;color:var(--txt2)">${e}</div></div>`).join('')}
+      </div>
+      <div style="text-align:center">
+        <button onclick="checkBasicAnswer()" style="padding:.5rem 2rem;background:linear-gradient(135deg,var(--gold),var(--gold-l));border:none;border-radius:8px;color:var(--bg);font-size:.9rem;cursor:pointer;font-family:'Noto Serif SC',serif">提交答案</button>
+      </div>
+      <div id="basicResult" style="display:none;margin-top:1rem;text-align:center;padding:1rem;border-radius:10px"></div>
+    </div>
+    <div style="text-align:center;margin-top:1rem;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap">
+      <button onclick="navBasicLevel(-1)" style="padding:.4rem 1.2rem;border:1px solid rgba(212,175,55,.3);background:transparent;color:var(--gold);border-radius:6px;cursor:pointer;font-size:.8rem"${BS.lvlIdx <= 0 ? ' disabled' : ''}>◀ 上一题</button>
+      <button onclick="showBasic()" style="padding:.4rem 1rem;border:1px solid rgba(212,175,55,.3);background:transparent;color:var(--gold);border-radius:6px;cursor:pointer;font-size:.8rem">返回关卡</button>
+      <button onclick="navBasicLevel(1)" style="padding:.4rem 1.2rem;border:1px solid rgba(212,175,55,.3);background:transparent;color:var(--gold);border-radius:6px;cursor:pointer;font-size:.8rem"${BS.lvlIdx >= 9 ? ' disabled' : ''}>下一题 ▶</button>
+    </div>
+  `;
+  container.innerHTML = html;
+}
+
+function navBasicLevel(dir) {
+  const newIdx = BS.lvlIdx + dir;
+  if (newIdx < 0 || newIdx > 9) return;
+  startBasicLevel(BS.volIdx, newIdx);
+}
+
+function checkBasicAnswer() {
+  const vol = BASIC_VOLS[BS.volIdx];
+  const vi = BS.volIdx;
+  const li = BS.lvlIdx;
+  const pz = BS.currentPz;
+  let correct = true;
+  vol.els.forEach(e => {
+    const input = document.getElementById('ans_' + e);
+    const ans = parseInt(input.value);
+    if (ans !== pz.result[e]) {
+      correct = false;
+      input.style.borderColor = 'var(--fire)';
+    } else {
+      input.style.borderColor = 'var(--wood)';
+    }
+  });
+  const resultDiv = document.getElementById('basicResult');
+  resultDiv.style.display = 'block';
+  if (correct) {
+    resultDiv.style.background = 'rgba(34,139,34,.15)';
+    resultDiv.innerHTML = `<div style="font-size:2rem">✅</div><div style="color:var(--wood);font-family:'Ma Shan Zheng',cursive;font-size:1.2rem">回答正确！</div>`;
+    if (!BS.done[vol.id]) BS.done[vol.id] = {};
+    BS.done[vol.id][li] = true;
+    localStorage.setItem('wuxing_basic_v1', JSON.stringify(BS.done));
+  } else {
+    resultDiv.style.background = 'rgba(220,20,60,.15)';
+    resultDiv.innerHTML = `<div style="font-size:2rem">❌</div><div style="color:var(--fire);font-family:'Ma Shan Zheng',cursive;font-size:1.2rem">答案有误，请重试</div><div style="color:var(--txt2);font-size:.75rem;margin-top:.5rem">正确答案：${vol.els.map(e => `${ICONS[e]}${pz.result[e]}`).join(' ')}</div>`;
+  }
+}
+
+// 加载初级运算进度
+try {
+  const bd = JSON.parse(localStorage.getItem('wuxing_basic_v1'));
+  if (bd) BS.done = bd;
+} catch(e) {}
+
+// 绑定选关按钮事件
+document.getElementById('selectLevelBtn').onclick = function() {
+  openLevelPicker(S.volIdx);
+};
+
+// 点击弹窗背景关闭
+document.getElementById('levelModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
