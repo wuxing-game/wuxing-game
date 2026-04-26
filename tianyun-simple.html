@@ -521,7 +521,7 @@ button:active { transform: translateY(0); }
   <h1>天 运 棋 · 简 单 玩 法</h1>
 </div>
 
-<div class="game-container">
+<div class="game-container" id="gameArea">
   <div class="board-wrapper">
     <img id="board" src="board.png" alt="天运棋棋盘" />
     <div class="pieces-overlay" id="piecesOverlay">
@@ -655,12 +655,16 @@ button:active { transform: translateY(0); }
       </div>
     </div>
 
+    <!-- 标题 -->
+    <h2 style="font-size:18px;letter-spacing:3px;margin-bottom:16px;color:#D4A843;text-align:center;">天运文字棋（简单玩法不含五行属性）</h2>
+
     <!-- 操作按钮 -->
     <div id="actionButtons" style="display:flex;gap:10px;flex-wrap:wrap;">
       <button id="btnCreateRoom" onclick="createRoom()" style="flex:1;min-width:120px;padding:14px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">创建房间</button>
       <button id="btnJoinRoom" onclick="showJoinInput()" style="flex:1;min-width:120px;padding:14px;background:rgba(212,168,67,0.15);border:1px solid rgba(212,168,67,0.3);border-radius:3px;color:#D4A843;font-size:14px;cursor:pointer;letter-spacing:3px;">输入房间号</button>
       <button id="btnCancelRoom" onclick="cancelRoom()" style="display:none;flex:1;min-width:120px;padding:12px;background:rgba(139,41,66,0.2);border:1px solid rgba(139,41,66,0.4);border-radius:3px;color:#c05070;font-size:14px;cursor:pointer;letter-spacing:2px;">取消房间</button>
     </div>
+    <button onclick="showSimpleRules()" style="margin-top:10px;width:100%;padding:8px;background:transparent;border:1px solid rgba(212,168,67,0.3);border-radius:3px;color:#D4A843;font-size:12px;cursor:pointer;letter-spacing:2px;">规则说明</button>
 
     <button onclick="closeRoomModal()" style="margin-top:16px;width:100%;padding:10px;background:transparent;border:none;color:#C4B08A;font-size:12px;cursor:pointer;letter-spacing:2px;opacity:0.5;">稍后再说</button>
   </div>
@@ -1634,9 +1638,10 @@ function closeOpponentLeftModal() {
   undoCount = {red: 3, black: 3};
   // 重置按钮状态
   var bm = document.querySelector('.btn-multi'); if (bm) { bm.classList.remove('active'); bm.innerHTML = '<span class="online-dot green"></span>多人对战'; }
-  updateStatus('对手已离开，可点击「多人对战」开始新对局');
+  updateStatus('对手已离开，可重新开始新对局');
   initBoard(); // 重置棋盘
-}
+  // 重新打开房间弹窗
+  if (rm) rm.classList.add('show');
 function openRoomModal() { 
   if (isOnline && gameStarted) {
     // 棋局进行中，直接申请退出
@@ -2220,6 +2225,10 @@ function joinRoom() {
 function closeRoomModal() {
   var rm = document.getElementById('roomModal');
   if (rm) rm.classList.remove('show');
+}
+
+function showSimpleRules() {
+  alert('简单玩法：丙丁壬癸走直线，其它棋子走日字。挡路可以憋马腿，谁见谁面都能杀。除甲之外其它棋子第一步只能移动不能互杀，移动之后才能杀别的棋子和被杀，谁剩一子就是输。都剩一个是和棋。');
 }
 
 function cancelRoom() {
