@@ -1642,6 +1642,8 @@ function closeOpponentLeftModal() {
   initBoard(); // 重置棋盘
   // 重新打开房间弹窗
   if (rm) rm.classList.add('show');
+}
+
 function openRoomModal() { 
   if (isOnline && gameStarted) {
     // 棋局进行中，直接申请退出
