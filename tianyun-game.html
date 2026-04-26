@@ -520,7 +520,7 @@ button:active { transform: translateY(0); }
   <h1>天 运 棋</h1>
 </div>
 
-<div class="game-container">
+<div class="game-container" id="gameArea">
   <div class="board-wrapper">
     <img id="board" src="board.png" alt="天运棋棋盘" />
     <div class="pieces-overlay" id="piecesOverlay">
@@ -655,6 +655,9 @@ button:active { transform: translateY(0); }
       <p style="font-size:11px;color:#C4B08A;opacity:0.4;margin-top:8px;letter-spacing:1px;">输入4位数字，如"3741""5298"</p>
     </div>
 
+    <!-- 标题（始终可见） -->
+    <h2 style="font-size:22px;letter-spacing:4px;margin-bottom:16px;color:#D4A843;text-align:center;">天运五行棋</h2>
+
     <!-- 选择红黑方（仅房主可见） -->
     <div id="colorSelect" style="display:none;margin-bottom:20px;">
       <p style="font-size:12px;color:#C4B08A;margin-bottom:10px;letter-spacing:2px;">选择你的棋子颜色</p>
@@ -668,6 +671,7 @@ button:active { transform: translateY(0); }
     <div id="actionButtons" style="display:flex;gap:10px;flex-wrap:wrap;">
       <button id="btnCreateRoom" onclick="createRoom()" style="flex:1;min-width:120px;padding:14px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">创建房间</button>
       <button id="btnJoinRoom" onclick="showJoinInput()" style="flex:1;min-width:120px;padding:14px;background:rgba(212,168,67,0.15);border:1px solid rgba(212,168,67,0.3);border-radius:3px;color:#D4A843;font-size:14px;cursor:pointer;letter-spacing:3px;">加入房间</button>
+      <button onclick="showClassicRules()" style="flex:1;min-width:80px;padding:14px;background:rgba(30,30,30,0.4);border:1px solid rgba(100,100,100,0.3);border-radius:3px;color:#888;font-size:14px;cursor:pointer;letter-spacing:2px;">规则</button>
       <button id="btnCancelRoom" onclick="cancelRoom()" style="display:none;flex:1;min-width:120px;padding:12px;background:rgba(139,41,66,0.2);border:1px solid rgba(139,41,66,0.4);border-radius:3px;color:#c05070;font-size:14px;cursor:pointer;letter-spacing:2px;">取消房间</button>
     </div>
 
@@ -785,6 +789,10 @@ var isOnline = false;
 var myPlayer = null;
 var myRole = null;
 var roomCode = null;
+
+function showClassicRules() {
+  alert('甲乙庚辛走日字，丙丁壬癸直线冲。\n戊己日直都能走，走日憋腿难前行。\n五行属性杀所克，同性相杀也能行。\n甲棋不能过河界，余子不动杀不成。\n棋进本营皆可杀，吃甲占敌营为胜。');
+}
 
 function gridToPixel(row, col) {
   return {
@@ -1693,9 +1701,9 @@ function closeOpponentLeftModal() {
   var m = document.getElementById('opponentLeftModal');
   if (m) m.style.display = 'none';
   // 隐藏游戏结束弹窗和退出弹窗
-  var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
-  var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
-  // 隐藏游戏界面，关闭房间弹窗
+  var gm = document.getElementById('gameOverModal'); if (gm) gm.style.display = 'none';
+  var qm = document.getElementById('quitModal'); if (qm) qm.style.display = 'none';
+  // 隐藏游戏界面
   var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none';
   var rm = document.getElementById('roomModal'); if (rm) rm.classList.remove('show');
   var cs = document.getElementById('colorSelect'); if (cs) cs.style.display = 'none';
@@ -1714,8 +1722,10 @@ function closeOpponentLeftModal() {
   var bu = document.getElementById('btnUndo'); if (bu) { bu.style.display = 'none'; bu.textContent = '悔棋(3)'; }
   // 重置按钮状态
   var bm = document.querySelector('.btn-multi'); if (bm) { bm.classList.remove('active'); bm.innerHTML = '<span class="online-dot green"></span>多人对战'; }
-  updateStatus('对手已离开，可点击「多人对战」开始新对局');
+  updateStatus('对手已离开，可重新开始新对局');
   initBoard(); // 重置棋盘
+  // 重新打开房间弹窗
+  if (rm) rm.classList.add('show');
 }
 function openRoomModal() { 
   if (isOnline && gameStarted) {
