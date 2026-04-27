@@ -1721,7 +1721,7 @@ function connectLocalServer() {
     isOnline = false; gameStarted = false;
     clearMoveTimer();
     var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none';
-    var m = document.getElementById('opponentLeftModal'); if (m) m.style.display = 'none';
+    var m = document.getElementById('opponentLeftModal'); if (m) { m.style.display = 'flex'; var mc = m.querySelector('.modal'); if (mc) mc.style.transform = 'none'; }
     var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
     var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
     showLocalConnStatus('⚠️ 对手已离开房间', 'yellow');
@@ -1794,7 +1794,7 @@ function p2pCreateRoom() {
     isOnline = false; gameStarted = false;
     clearMoveTimer();
     var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none';
-    var m = document.getElementById('opponentLeftModal'); if (m) m.style.display = 'none';
+    var m = document.getElementById('opponentLeftModal'); if (m) { m.style.display = 'flex'; var mc = m.querySelector('.modal'); if (mc) mc.style.transform = 'none'; }
     var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
     var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
     document.getElementById('modeSelect').style.display = 'flex';
@@ -1865,7 +1865,7 @@ function p2pJoinRoom() {
       isOnline = false; gameStarted = false;
       clearMoveTimer();
       var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none';
-      var m = document.getElementById('opponentLeftModal'); if (m) m.style.display = 'none';
+      var m = document.getElementById('opponentLeftModal'); if (m) { m.style.display = 'flex'; var mc = m.querySelector('.modal'); if (mc) mc.style.transform = 'none'; }
       var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
       var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
       showP2PStatus('⚠️ 与房主断开连接', 'yellow');
@@ -1979,7 +1979,7 @@ function wsConnect(ip, port, callbacks) {
     try { msg = JSON.parse(String(e.data).trim()); } catch(err) { return; }
     handleLocalMessage(msg);
   };
-  wsConn.onclose = function(e) { if (callbacks && callbacks.onClose) callbacks.onClose(e); if (isOnline && gameStarted) { isOnline = false; gameStarted = false; var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none'; var m = document.getElementById('opponentLeftModal'); if (m) m.style.display = 'none'; var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show'); var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show'); document.getElementById('modeSelect').style.display = 'flex'; } };
+  wsConn.onclose = function(e) { if (callbacks && callbacks.onClose) callbacks.onClose(e); if (isOnline && gameStarted) { isOnline = false; gameStarted = false; var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none'; var m = document.getElementById('opponentLeftModal'); if (m) { m.style.display = 'flex'; var mc = m.querySelector('.modal'); if (mc) mc.style.transform = 'none'; } var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show'); var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show'); document.getElementById('modeSelect').style.display = 'flex'; } };
   wsConn.onerror = function(e) { if (callbacks && callbacks.onError) callbacks.onError('连接错误'); };
 }
 function handleLocalMessage(msg) {
