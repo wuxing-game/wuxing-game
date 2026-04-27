@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>天运棋·简单玩法</title>
-<!-- PeerJS CDN加载 (带超时保护，不阻塞页面) -->
+<title>天运棋·简单玩法 v2-0427</title>
+<!-- PeerJS CDN加载 (带超时保护,不阻塞页面) -->
 <script>
-var GAME_MODE = 'simple'; var VERSION = 'simple-v1';
+var GAME_MODE = 'simple'; var VERSION = 'simple-v2-0427';
 (function(){
   var cdns = [
     'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js',
@@ -15,16 +15,16 @@ var GAME_MODE = 'simple'; var VERSION = 'simple-v1';
   ];
   var i = 0;
   function load() {
-    if (i >= cdns.length) { console.warn('PeerJS CDN不可用，将使用WebSocket模式'); return; }
+    if (i >= cdns.length) { console.warn('PeerJS CDN不可用,将使用WebSocket模式'); return; }
     var s = document.createElement('script');
     s.src = cdns[i]; s.async = true;
     s.onload = function() { console.log('PeerJS OK:', cdns[i]); };
     s.onerror = function() { i++; load(); };
     document.head.appendChild(s);
   }
-  // 5秒超时，避免卡住页面
+  // 5秒超时,避免卡住页面
   setTimeout(function() {
-    if (typeof Peer === 'undefined') { console.warn('PeerJS加载超时，WebSocket模式'); }
+    if (typeof Peer === 'undefined') { console.warn('PeerJS加载超时,WebSocket模式'); }
   }, 5000);
   load();
 })();
@@ -442,35 +442,35 @@ button:active { transform: translateY(0); }
 @media screen and (max-width: 768px) {
   body { padding: 5px; }
   .header h1 { font-size: 20px; letter-spacing: 4px; }
-  
+
   .game-container {
     flex-direction: column;
     align-items: center;
     gap: 10px;
   }
-  
+
   .board-wrapper {
     max-width: 100vw;
     overflow-x: hidden;
   }
-  
+
   #board {
     max-width: 100vw;
     height: auto;
     display: block;
   }
-  
+
   .pieces-overlay, #piecesCanvas {
     max-width: 100vw;
     height: auto !important;
   }
-  
+
   .sidebar {
     width: 100% !important;
     max-width: 100vw;
     padding: 8px;
   }
-  
+
   .info-panel { padding: 8px; }
   .info-panel h3 { font-size: 14px; }
   .turn-indicator { font-size: 14px; padding: 6px 10px; }
@@ -478,28 +478,28 @@ button:active { transform: translateY(0); }
   .move-timer.timer-warn { color: #e74c3c; animation: timerBlink 0.5s infinite alternate; }
   @keyframes timerBlink { from { opacity: 1; } to { opacity: 0.4; } }
   .status-text { font-size: 12px; }
-  
+
   .btn-row { flex-wrap: wrap; gap: 6px; }
   .btn-row button { padding: 8px 12px; font-size: 12px; }
-  
+
   .pieces-list { font-size: 12px; padding: 6px; }
   .piece-dot { width: 20px; height: 20px; font-size: 11px; }
-  
+
   #roomModal .modal-content {
     width: 95% !important;
     max-width: 95vw;
     padding: 15px;
   }
-  
+
   #roomModal h2 { font-size: 18px; }
   #roomModal p { font-size: 12px; }
   #roomModal button { padding: 10px 15px; font-size: 13px; }
-  
+
   #gameOverModal .modal-content {
     width: 90% !important;
     padding: 20px;
   }
-  
+
   #quitModal .modal-content {
     width: 90% !important;
     padding: 15px;
@@ -534,12 +534,12 @@ button:active { transform: translateY(0); }
       <h3>⚔ 对局信息</h3>
       <div id="turnIndicator" class="turn-indicator turn-red">▶ 红方回合</div>
       <div id="moveTimer" class="move-timer" style="display:none;">⏱ <span id="timerCount">60</span>秒</div>
-      <div id="statusText" class="status-text">点击选择棋子</div>
+      <div id="statusText" class="status-text">点击选择棋子 <span style="color:#555;font-size:10px;float:right;">v2-0427</span></div>
       <div class="btn-row">
         <button onclick="requestRestart()">重新开始</button>
         <button onclick="toggleRules()">规则</button>
         <button class="btn-multi" onclick="openRoomModal()"><span class="online-dot green"></span>多人对战</button>
-        <button id="btnUndo" onclick="requestUndo()" style="display:none;padding:6px 10px;background:rgba(80,150,80,0.15);border:1px solid rgba(80,150,80,0.3);border-radius:3px;color:#70c070;font-size:12px;cursor:pointer;letter-spacing:1px;" title="悔棋（每局3次）">悔棋(3)</button>
+        <button id="btnUndo" onclick="requestUndo()" style="display:none;padding:6px 10px;background:rgba(80,150,80,0.15);border:1px solid rgba(80,150,80,0.3);border-radius:3px;color:#70c070;font-size:12px;cursor:pointer;letter-spacing:1px;" title="悔棋(每局3次)">悔棋(3)</button>
         <button id="btnQuit" onclick="requestQuit()" style="display:none;padding:6px 10px;background:rgba(139,41,66,0.15);border:1px solid rgba(139,41,66,0.3);border-radius:3px;color:#c05070;font-size:12px;cursor:pointer;letter-spacing:1px;" title="申请退出对局">申请退出</button>
       </div>
     </div>
@@ -565,14 +565,14 @@ button:active { transform: translateY(0); }
         <ul>
           <li>丙、丁、壬、癸 → 直线行走</li>
           <li>甲、乙、庚、辛、戊、己 → 走"日"字</li>
-          <li>走"日"字时，有蹩马腿限制</li>
+          <li>走"日"字时,有蹩马腿限制</li>
         </ul>
       </div>
       <div class="rule-section">
         <h4>吃子规则</h4>
         <ul>
-          <li>谁见谁面都能杀（无五行限制）</li>
-          <li>除甲之外，动才活（未动棋子不可被吃，也不吃对方）</li>
+          <li>谁见谁面都能杀(无五行限制)</li>
+          <li>除甲之外,动才活(未动棋子不可被吃,也不吃对方)</li>
           <li>甲可过河</li>
           <li>长捉长将不过三</li>
         </ul>
@@ -587,7 +587,7 @@ button:active { transform: translateY(0); }
       <div class="rule-section">
         <h4>限时规则</h4>
         <ul>
-          <li>每步限时60秒，超时自动随机走棋。</li>
+          <li>每步限时60秒,超时自动随机走棋。</li>
         </ul>
       </div>
     </div>
@@ -608,10 +608,10 @@ button:active { transform: translateY(0); }
     <div class="corner corner-bl"></div>
     <div class="corner corner-br"></div>
     <h2 id="restartTitle" style="font-size:20px;letter-spacing:4px;margin-bottom:12px;">对方请求重新开始</h2>
-    <p id="restartText" style="color:#cba;font-size:14px;margin-bottom:24px;letter-spacing:1px;line-height:1.7;">对方请求重新开始本局，是否同意？</p>
+    <p id="restartText" style="color:#cba;font-size:14px;margin-bottom:24px;letter-spacing:1px;line-height:1.7;">对方请求重新开始本局,是否同意?</p>
     <div style="display:flex;gap:12px;">
-      <button onclick="agreeRestart()" style="flex:1;padding:12px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">同意，重新开始</button>
-      <button onclick="refuseRestart()" style="flex:1;padding:12px;background:rgba(139,41,66,0.15);border:1px solid rgba(139,41,66,0.4);border-radius:3px;color:#c05070;font-size:14px;cursor:pointer;letter-spacing:2px;">拒绝，继续下棋</button>
+      <button onclick="agreeRestart()" style="flex:1;padding:12px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">同意,重新开始</button>
+      <button onclick="refuseRestart()" style="flex:1;padding:12px;background:rgba(139,41,66,0.15);border:1px solid rgba(139,41,66,0.4);border-radius:3px;color:#c05070;font-size:14px;cursor:pointer;letter-spacing:2px;">拒绝,继续下棋</button>
     </div>
   </div>
 </div>
@@ -624,7 +624,7 @@ button:active { transform: translateY(0); }
     <div class="corner corner-bl"></div>
     <div class="corner corner-br"></div>
     <h2 style="font-size:22px;letter-spacing:4px;margin-bottom:8px;">多人对战</h2>
-    <p id="roomSubtitle" style="color:#cba;font-size:13px;margin-bottom:24px;letter-spacing:1px;">输入相同房间号，匹配对手</p>
+    <p id="roomSubtitle" style="color:#cba;font-size:13px;margin-bottom:24px;letter-spacing:1px;">输入相同房间号,匹配对手</p>
 
     <!-- 连接状态 -->
     <div id="connStatus" style="display:none;margin-bottom:20px;padding:10px 16px;border-radius:3px;font-size:12px;letter-spacing:1px;text-align:center;"></div>
@@ -636,17 +636,17 @@ button:active { transform: translateY(0); }
       <p style="font-size:11px;color:#C4B08A;opacity:0.5;margin-top:6px;letter-spacing:1px;">点击可复制房间号</p>
     </div>
 
-    <!-- 房间号输入（默认隐藏，点击"加入房间"后显示） -->
+    <!-- 房间号输入(默认隐藏,点击"加入房间"后显示) -->
     <div id="roomCodeInput" style="display:none;margin-bottom:20px;">
       <p style="font-size:12px;color:#C4B08A;margin-bottom:8px;letter-spacing:2px;">输入对方给你的房间号</p>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <input type="text" id="inputRoomCode" placeholder="例：3741" maxlength="4" style="width:100%;box-sizing:border-box;padding:12px 16px;background:rgba(0,0,0,0.4);border:1px solid rgba(212,168,67,0.2);border-radius:3px;color:#F5E6C8;font-size:22px;text-align:center;letter-spacing:8px;font-family:'Courier New',monospace;outline:none;" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter')joinRoom()">
+        <input type="text" id="inputRoomCode" placeholder="例:3741" maxlength="4" style="width:100%;box-sizing:border-box;padding:12px 16px;background:rgba(0,0,0,0.4);border:1px solid rgba(212,168,67,0.2);border-radius:3px;color:#F5E6C8;font-size:22px;text-align:center;letter-spacing:8px;font-family:'Courier New',monospace;outline:none;" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter')joinRoom()">
         <button onclick="joinRoom()" style="width:100%;box-sizing:border-box;padding:14px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:3px;">确定加入</button>
       </div>
-      <p style="font-size:11px;color:#C4B08A;opacity:0.4;margin-top:8px;letter-spacing:1px;">输入4位数字，如"3741""5298"</p>
+      <p style="font-size:11px;color:#C4B08A;opacity:0.4;margin-top:8px;letter-spacing:1px;">输入4位数字,如"3741""5298"</p>
     </div>
 
-    <!-- 选择红黑方（仅房主可见） -->
+    <!-- 选择红黑方(仅房主可见) -->
     <div id="colorSelect" style="display:none;margin-bottom:20px;">
       <p style="font-size:12px;color:#C4B08A;margin-bottom:10px;letter-spacing:2px;">选择你的棋子颜色</p>
       <div style="display:flex;gap:10px;">
@@ -656,7 +656,7 @@ button:active { transform: translateY(0); }
     </div>
 
     <!-- 标题 -->
-    <h2 style="font-size:18px;letter-spacing:3px;margin-bottom:16px;color:#D4A843;text-align:center;">天运文字棋（简单玩法不含五行属性）</h2>
+    <h2 style="font-size:18px;letter-spacing:3px;margin-bottom:16px;color:#D4A843;text-align:center;">天运文字棋(简单玩法不含五行属性)</h2>
 
     <!-- 操作按钮 -->
     <div id="actionButtons" style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -678,10 +678,10 @@ button:active { transform: translateY(0); }
     <div class="corner corner-bl"></div>
     <div class="corner corner-br"></div>
     <h2 id="quitTitle" style="font-size:20px;letter-spacing:4px;margin-bottom:12px;">对方申请退出</h2>
-    <p id="quitText" style="color:#cba;font-size:14px;margin-bottom:24px;letter-spacing:1px;line-height:1.7;">对方申请结束本局对局，是否同意？</p>
+    <p id="quitText" style="color:#cba;font-size:14px;margin-bottom:24px;letter-spacing:1px;line-height:1.7;">对方申请结束本局对局,是否同意?</p>
     <div style="display:flex;gap:12px;">
       <button id="btnAgreeQuit" onclick="agreeQuit()" style="flex:1;padding:12px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">同意退出</button>
-      <button id="btnRefuseQuit" onclick="refuseQuit()" style="flex:1;padding:12px;background:rgba(139,41,66,0.15);border:1px solid rgba(139,41,66,0.4);border-radius:3px;color:#c05070;font-size:14px;cursor:pointer;letter-spacing:2px;">拒绝，继续下棋</button>
+      <button id="btnRefuseQuit" onclick="refuseQuit()" style="flex:1;padding:12px;background:rgba(139,41,66,0.15);border:1px solid rgba(139,41,66,0.4);border-radius:3px;color:#c05070;font-size:14px;cursor:pointer;letter-spacing:2px;">拒绝,继续下棋</button>
     </div>
     <button onclick="refuseQuit()" style="margin-top:12px;width:100%;padding:8px;background:transparent;border:none;color:#C4B08A;font-size:11px;cursor:pointer;letter-spacing:1px;opacity:0.4;">稍后再说</button>
   </div>
@@ -695,7 +695,8 @@ button:active { transform: translateY(0); }
     <div class="corner corner-bl"></div>
     <div class="corner corner-br"></div>
     <h2 style="font-size:22px;letter-spacing:4px;margin-bottom:8px;color:#D4A843;">⚠️ 对手已离开</h2>
-    <p style="color:#cba;font-size:14px;margin-bottom:24px;letter-spacing:1px;">对方已退出房间，本局对局结束</p>
+    <p style="color:#cba;font-size:14px;margin-bottom:24px;letter-spacing:1px;">对方已退出房间,本局对局结束</p>
+    <p style="color:#666;font-size:11px;margin-bottom:8px;">v2-0427</p>
     <div style="display:flex;gap:12px;">
       <button onclick="closeOpponentLeftModal()" style="flex:1;padding:12px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">确定</button>
     </div>
@@ -710,33 +711,33 @@ const BOARD_H = 1304;
 const GRID_COLS = 9;
 const GRID_ROWS = 10;
 
-// 棋盘线条区域（像素坐标，从棋盘图片测量）
-const LINE_TOP = 130;     // 首行顶部（缩小间距）
+// 棋盘线条区域(像素坐标,从棋盘图片测量)
+const LINE_TOP = 130;     // 首行顶部(缩小间距)
 const LINE_BOTTOM = 1165; // 末行底部
-const LINE_LEFT = 87;    // 左边界（重新居中）
-const LINE_RIGHT = 1047; // 右边界（间距120px居中）
+const LINE_LEFT = 87;    // 左边界(重新居中)
+const LINE_RIGHT = 1047; // 右边界(间距120px居中)
 const LINE_HEIGHT = (LINE_BOTTOM - LINE_TOP) / (GRID_ROWS - 1);
 const LINE_WIDTH = (LINE_RIGHT - LINE_LEFT) / (GRID_COLS - 1);
 
-// 界河位置（第5-6行之间）
+// 界河位置(第5-6行之间)
 const RIVER_ROW_START = 4;
 const RIVER_ROW_END = 5;
 
-// 大本营位置（营标记）
+// 大本营位置(营标记)
 const CAMP_POSITIONS = {
   red: [{row:9,col:3},{row:9,col:4},{row:9,col:5}],
   black: [{row:0,col:3},{row:0,col:4},{row:0,col:5}]
 };
 
-// 甲字位置（界河边）
+// 甲字位置(界河边)
 const JIA_POSITIONS = {
   red: [{row:5,col:4}], black: [{row:4,col:4}]
 };
 
-// 棋盘原点（左上角交点）
+// 棋盘原点(左上角交点)
 const GRID_ORIGIN = { x: LINE_LEFT, y: LINE_TOP };
 
-// 五行属性（木火土金水）
+// 五行属性(木火土金水)
 const WUXING = {
   '甲':'木', '乙':'木',
   '丙':'火', '丁':'火',
@@ -779,7 +780,7 @@ var myRole = null;
 var roomCode = null;
 var pieceCycles = {};
 var moveHistory = [];
-var moveRecord = []; // 完整走棋记录，用于悔棋
+var moveRecord = []; // 完整走棋记录,用于悔棋
 var undoCount = {red: 3, black: 3}; // 每方悔棋剩余次数
 
 function gridToPixel(row, col) {
@@ -794,18 +795,18 @@ function pixelToGrid(x, y) {
   return { row, col };
 }
 function isValidGrid(row, col) {
-  // 界河区域：第5-6行没有竖线，但可以走直线
+  // 界河区域:第5-6行没有竖线,但可以走直线
   // 检查是否在有效范围内
   if (row < 0 || row > 9 || col < 0 || col > 8) return false;
-  
-  // 界河区域竖线穿过，但直线可以走
-  // 日字跳跃时不能穿过界河的限制暂时忽略（简化处理）
+
+  // 界河区域竖线穿过,但直线可以走
+  // 日字跳跃时不能穿过界河的限制暂时忽略(简化处理)
   return true;
 }
 function getStraightMoves(piece) {
   var moves = [];
   var directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-  
+
   for (var [dr, dc] of directions) {
     var nr = piece.row + dr;
     var nc = piece.col + dc;
@@ -832,19 +833,19 @@ function getHorseMoves(piece) {
     [-1, -2, 0, -1], [1, -2, 0, -1],
     [-1, 2, 0, 1], [1, 2, 0, 1]
   ];
-  
+
   for (var [dr, dc, blockDr, blockDc] of jumps) {
     var nr = piece.row + dr;
     var nc = piece.col + dc;
     var blockR = piece.row + blockDr;
     var blockC = piece.col + blockDc;
-    
+
     if (!isValidGrid(nr, nc)) continue;
-    
+
     // 蹩马腿检查
     var blocker = getPieceAt(blockR, blockC);
     if (blocker) continue;
-    
+
     var target = getPieceAt(nr, nc);
     if (target) {
       if (target.player !== piece.player) {
@@ -860,19 +861,19 @@ function getWuxing(char) {
   return WUXING[char] || null;
 }
 function canCaptureTarget(attacker, defender) {
-  // 简单玩法：未移动过的非甲棋子不能被吃
+  // 简单玩法:未移动过的非甲棋子不能被吃
   if (!defender.moved && defender.char !== '甲') {
     return false;
   }
-  // 简单玩法：谁见谁面都能杀（无五行限制）
+  // 简单玩法:谁见谁面都能杀(无五行限制)
   return true;
 }
 function canMove(piece) {
-  // 规则：所有棋子都可以移动
+  // 规则:所有棋子都可以移动
   return true;
 }
 function canCapture(piece) {
-  // 规则：第一步移动不能吃子，只有动过的棋子才能吃子（除甲外）
+  // 规则:第一步移动不能吃子,只有动过的棋子才能吃子(除甲外)
   // 甲永远可以吃子
   if (piece.char === '甲') return true;
   return piece.moved;
@@ -880,36 +881,36 @@ function canCapture(piece) {
 function getValidMoves(piece) {
   if (gameOver) return [];
   if (!canMove(piece)) return [];
-  
+
   var char = piece.char;
   var moves = [];
-  
-  // 简单玩法：丙丁壬癸走直线，其它棋子走日字（戊己也只走日字）
+
+  // 简单玩法:丙丁壬癸走直线,其它棋子走日字(戊己也只走日字)
   if (['丙', '丁', '壬', '癸'].indexOf(char) >= 0) {
     moves = getStraightMoves(piece);
   }
-  // 甲乙庚辛戊己 - 全部走日字（简单玩法戊己不走直线）
+  // 甲乙庚辛戊己 - 全部走日字(简单玩法戊己不走直线)
   else {
     moves = getHorseMoves(piece);
-    // 简单玩法：甲可过河，无限制
+    // 简单玩法:甲可过河,无限制
   }
-  
-  // 过滤：我方棋子不能吃
+
+  // 过滤:我方棋子不能吃
   moves = moves.filter(m => {
     if (m.target) {
       return m.target.player !== piece.player;
     }
     return true;
   });
-  
-  // 规则：除甲之外动才活（未动的非甲棋子不能吃子）
+
+  // 规则:除甲之外动才活(未动的非甲棋子不能吃子)
   if (piece.char !== '甲' && !piece.moved) {
     moves = moves.filter(m => !m.target);
   }
-  
-  // 简单玩法：无五行吃子限制，谁见谁面都能杀
+
+  // 简单玩法:无五行吃子限制,谁见谁面都能杀
   // 未动棋子保护已在上面处理
-  
+
   return moves;
 }
 function getPieceAt(row, col) {
@@ -919,25 +920,25 @@ function setupCanvas() {
   var board = document.getElementById('board');
   var canvas = document.getElementById('piecesCanvas');
   var overlay = document.getElementById('piecesOverlay');
-  
-// 等待图片加载（5秒超时保护）
+
+// 等待图片加载(5秒超时保护)
   if (!board.complete) {
     board.onload = setupCanvas;
     board.onerror = setupCanvas; // 图片加载失败也继续
-    return; // 等待回调，不继续执行
+    return; // 等待回调,不继续执行
   }
   var actualW = board.clientWidth;
   var actualH = board.clientHeight;
-  
+
   scale = actualW / BOARD_W;
   pieceRadius = 52 * scale;
   pieceFontSize = 36 * scale;
-  
+
   canvas.width = actualW;
   canvas.height = actualH;
   overlay.style.width = actualW + 'px';
   overlay.style.height = actualH + 'px';
-  
+
   draw();
 }
 function draw() {
@@ -945,7 +946,7 @@ function draw() {
   var ctx = canvas.getContext('2d');
   console.log('[DEBUG-draw] canvas尺寸:', canvas.width, 'x', canvas.height, 'scale=', scale, 'pieces=', pieces.length);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+
   // 绘制合法移动位置
   for (var move of validMoves) {
     var pos = gridToPixel(move.row, move.col);
@@ -956,20 +957,20 @@ function draw() {
     ctx.strokeStyle = 'rgba(80, 200, 80, 0.6)';
     ctx.lineWidth = 2 * scale;
     ctx.stroke();
-    
+
     if (move.target) {
-      // 可以吃子的位置，用红色标记
+      // 可以吃子的位置,用红色标记
       ctx.beginPath();
       ctx.arc(pos.x, pos.y, pieceRadius * 0.6, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(255, 80, 80, 0.25)';
       ctx.fill();
     }
   }
-  
+
   // 绘制棋子
   for (var piece of pieces) {
     var pos = gridToPixel(piece.row, piece.col);
-    
+
     // 选中效果
     if (selectedPiece && selectedPiece === piece) {
       ctx.beginPath();
@@ -977,13 +978,13 @@ function draw() {
       ctx.fillStyle = 'rgba(255, 215, 0, 0.4)';
       ctx.fill();
     }
-    
+
     // 棋子阴影
     ctx.beginPath();
     ctx.arc(pos.x + 2 * scale, pos.y + 2 * scale, pieceRadius, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(0,0,0,0.3)';
     ctx.fill();
-    
+
     // 棋子主体
     ctx.beginPath();
     ctx.arc(pos.x, pos.y, pieceRadius, 0, Math.PI * 2);
@@ -1001,20 +1002,20 @@ function draw() {
       ctx.fillStyle = grad;
     }
     ctx.fill();
-    
+
     // 棋子边框
     ctx.strokeStyle = '#D4A843';
     ctx.lineWidth = 2 * scale;
     ctx.stroke();
-    
-    // 棋子字符（黑方旋转180度显示）
+
+    // 棋子字符(黑方旋转180度显示)
     ctx.fillStyle = piece.player === 'red' ? '#fff' : '#e0e0e0';
     ctx.font = `bold ${pieceFontSize}px "SimSun", "宋体", serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.shadowColor = 'rgba(0,0,0,0.5)';
     ctx.shadowBlur = 3 * scale;
-    
+
     if (piece.player === 'black') {
       // 黑方棋子旋转180度
       ctx.save();
@@ -1031,105 +1032,105 @@ function draw() {
 }
 function handleCanvasClick(e) {
   if (gameOver) return;
-  
+
   var canvas = document.getElementById('piecesCanvas');
   var rect = canvas.getBoundingClientRect();
   var x = e.clientX - rect.left;
   var y = e.clientY - rect.top;
-  
-  // 黑方视角：canvas已旋转180°，需翻转点击坐标
+
+  // 黑方视角:canvas已旋转180°,需翻转点击坐标
   if (isOnline && myPlayer === 'black') {
     x = canvas.width - x;
     y = canvas.height - y;
   }
-  
+
   var grid = pixelToGrid(x, y);
-  
-  // 在线模式下，只能操作自己的棋子
+
+  // 在线模式下,只能操作自己的棋子
   if (isOnline && selectedPiece === null) {
     var clickedPiece = getPieceAt(grid.row, grid.col);
     if (clickedPiece && clickedPiece.player !== myPlayer) {
-      updateStatus('只能操作自己的棋子！');
+      updateStatus('只能操作自己的棋子!');
       return;
     }
   }
-  
+
   // 验证点击位置是否在有效范围内
   if (grid.row < 0 || grid.row > 9 || grid.col < 0 || grid.col > 8) {
-    // 点击空白区域，取消选择
+    // 点击空白区域,取消选择
     selectedPiece = null;
     validMoves = [];
     updateStatus('点击选择棋子');
     draw();
     return;
   }
-  
+
   var clickedPiece = getPieceAt(grid.row, grid.col);
-  
+
   if (selectedPiece) {
     // 尝试移动到点击位置
     var move = validMoves.find(m => m.row === grid.row && m.col === grid.col);
     if (move) {
       executeMove(move);
     } else if (clickedPiece && clickedPiece.player === currentPlayer) {
-      // 点击自己的其他棋子，切换选择
+      // 点击自己的其他棋子,切换选择
       if (canMove(clickedPiece)) {
         selectedPiece = clickedPiece;
         validMoves = getValidMoves(clickedPiece);
         if (clickedPiece.moved || clickedPiece.char === '甲') {
-          updateStatus(`已选择 ${currentPlayer === 'red' ? '红' : '黑'}${clickedPiece.char}，显示可移动位置`);
+          updateStatus(`已选择 ${currentPlayer === 'red' ? '红' : '黑'}${clickedPiece.char},显示可移动位置`);
         } else {
-          updateStatus(`已选择 ${currentPlayer === 'red' ? '红' : '黑'}${clickedPiece.char}（第一步移动，只能移动），显示可移动位置`);
+          updateStatus(`已选择 ${currentPlayer === 'red' ? '红' : '黑'}${clickedPiece.char}(第一步移动,只能移动),显示可移动位置`);
         }
       }
     } else {
-      // 点击空白或其他，撤销选择
+      // 点击空白或其他,撤销选择
       selectedPiece = null;
       validMoves = [];
       updateStatus('点击选择棋子');
     }
   } else {
-    // 没有选中棋子，选择
+    // 没有选中棋子,选择
     if (clickedPiece && clickedPiece.player === currentPlayer) {
       if (canMove(clickedPiece)) {
         selectedPiece = clickedPiece;
         validMoves = getValidMoves(clickedPiece);
         if (clickedPiece.moved || clickedPiece.char === '甲') {
-          updateStatus(`已选择 ${currentPlayer === 'red' ? '红' : '黑'}${clickedPiece.char}，显示可移动位置`);
+          updateStatus(`已选择 ${currentPlayer === 'red' ? '红' : '黑'}${clickedPiece.char},显示可移动位置`);
         } else {
-          updateStatus(`已选择 ${currentPlayer === 'red' ? '红' : '黑'}${clickedPiece.char}（第一步移动，只能移动），显示可移动位置`);
+          updateStatus(`已选择 ${currentPlayer === 'red' ? '红' : '黑'}${clickedPiece.char}(第一步移动,只能移动),显示可移动位置`);
         }
       } else {
-        updateStatus(`${clickedPiece.char} 尚未启动，不能移动`);
+        updateStatus(`${clickedPiece.char} 尚未启动,不能移动`);
       }
     }
   }
-  
+
   draw();
 }
 function initBoard() {
   pieces = [];
-  
-  // 红方棋子（底部）
-  // 第10行（index 9，底线）：丙戊庚壬 [空格] 癸辛己丁
+
+  // 红方棋子(底部)
+  // 第10行(index 9,底线):丙戊庚壬 [空格] 癸辛己丁
   pieces.push({ char: '丙', player: 'red', row: 9, col: 0, moved: false });
   pieces.push({ char: '戊', player: 'red', row: 9, col: 1, moved: false });
   pieces.push({ char: '庚', player: 'red', row: 9, col: 2, moved: false });
   pieces.push({ char: '壬', player: 'red', row: 9, col: 3, moved: false });
-  // col 4 是空格（界河或中点）
+  // col 4 是空格(界河或中点)
   pieces.push({ char: '癸', player: 'red', row: 9, col: 5, moved: false });
   pieces.push({ char: '辛', player: 'red', row: 9, col: 6, moved: false });
   pieces.push({ char: '己', player: 'red', row: 9, col: 7, moved: false });
   pieces.push({ char: '丁', player: 'red', row: 9, col: 8, moved: false });
-  
-  // 乙：第9行第5列（红线第2行中间）
+
+  // 乙:第9行第5列(红线第2行中间)
   pieces.push({ char: '乙', player: 'red', row: 8, col: 4, moved: false });
-  
-  // 甲：第5行第5列（河界中间）
+
+  // 甲:第5行第5列(河界中间)
   pieces.push({ char: '甲', player: 'red', row: 5, col: 4, moved: false });
-  
-  // 黑方棋子（顶部）
-  // 第1行（index 0，顶线）：丁、己、辛、癸、[空格]、壬、庚、戊、丙（从左到右）
+
+  // 黑方棋子(顶部)
+  // 第1行(index 0,顶线):丁、己、辛、癸、[空格]、壬、庚、戊、丙(从左到右)
   pieces.push({ char: '丁', player: 'black', row: 0, col: 0, moved: false });
   pieces.push({ char: '己', player: 'black', row: 0, col: 1, moved: false });
   pieces.push({ char: '辛', player: 'black', row: 0, col: 2, moved: false });
@@ -1139,11 +1140,11 @@ function initBoard() {
   pieces.push({ char: '庚', player: 'black', row: 0, col: 6, moved: false });
   pieces.push({ char: '戊', player: 'black', row: 0, col: 7, moved: false });
   pieces.push({ char: '丙', player: 'black', row: 0, col: 8, moved: false });
-  
-  // 乙：第2行第5列（黑线第2行中间）
+
+  // 乙:第2行第5列(黑线第2行中间)
   pieces.push({ char: '乙', player: 'black', row: 1, col: 4, moved: false });
-  
-  // 甲：第4行第5列（河界中间）
+
+  // 甲:第4行第5列(河界中间)
   pieces.push({ char: '甲', player: 'black', row: 4, col: 4, moved: false });
 }
 function executeMove(move) {
@@ -1151,28 +1152,28 @@ function executeMove(move) {
   var piece = selectedPiece;
   var origRow = piece.row, origCol = piece.col;
   clearMoveTimer(); // 走棋后停止计时
-  
+
   // 移动棋子
   piece.row = move.row;
   piece.col = move.col;
   piece.moved = true;
   console.log('[DEBUG-executeMove] 棋子位置更新: ', piece.char, '从(', origRow, origCol, ')到(', piece.row, piece.col, ')');
-  
+
   var captured = null;
   if (move.target) {
     captured = move.target;
-    
-    // 简单玩法：无五行吃子限制
-    
+
+    // 简单玩法:无五行吃子限制
+
     pieces = pieces.filter(p => p !== captured);
-    
-    // 简单玩法：吃甲不直接胜利，继续按剩子规则判定
-    
-    updateStatus(`${currentPlayer === 'red' ? '红' : '黑'}${piece.char} 吃掉 ${captured.player === 'red' ? '红' : '黑'}${captured.char}！`);
+
+    // 简单玩法:吃甲不直接胜利,继续按剩子规则判定
+
+    updateStatus(`${currentPlayer === 'red' ? '红' : '黑'}${piece.char} 吃掉 ${captured.player === 'red' ? '红' : '黑'}${captured.char}!`);
   } else {
     updateStatus(`${currentPlayer === 'red' ? '红' : '黑'}${piece.char} 移动到 (${move.row + 1}, ${move.col + 1})`);
   }
-  
+
   selectedPiece = null;
   validMoves = [];
 
@@ -1187,7 +1188,7 @@ function executeMove(move) {
     wasMoved: piece.moved === false ? false : true // 记录移动前的moved状态
   });
 
-  // --- 在线模式：同步走棋给对手 ---
+  // --- 在线模式:同步走棋给对手 ---
   if (isOnline) {
     sendData({
       type: 'move',
@@ -1197,19 +1198,19 @@ function executeMove(move) {
     });
   }
 
-  // 检查三捉三将（走三趟往返判负：走过去走过来走过去走过来走过去走过来）
+  // 检查三捉三将(走三趟往返判负:走过去走过来走过去走过来走过去走过来)
   var repeatCheck = checkThreeRepeats(piece, origRow, origCol, move.row, move.col);
   if (repeatCheck.repeated) {
     gameOver = true;
     var loser = piece.player;
     var winner = loser === 'red' ? 'black' : 'red';
-    updateStatus(`${loser === 'red' ? '红' : '黑'}方连续三次走相同棋步，${loser === 'red' ? '红方' : '黑方'}判负！`);
-    showGameOver({ winner: winner, reason: `${loser === 'red' ? '红方' : '黑方'}连续三次走相同棋步，三捉三将作罢，${loser === 'red' ? '黑方' : '红方'}获胜！` });
+    updateStatus(`${loser === 'red' ? '红' : '黑'}方连续三次走相同棋步,${loser === 'red' ? '红方' : '黑方'}判负!`);
+    showGameOver({ winner: winner, reason: `${loser === 'red' ? '红方' : '黑方'}连续三次走相同棋步,三捉三将作罢,${loser === 'red' ? '黑方' : '红方'}获胜!` });
     if (isOnline) sendData({ type: 'game_over', winner: winner, reason: '三捉三将作罢' });
     draw();
     return;
   }
-  
+
   // 检查胜负
   var result = checkGameOver();
   if (result) {
@@ -1218,7 +1219,7 @@ function executeMove(move) {
     if (isOnline) sendData({ type: 'game_over', winner: result.winner, reason: result.reason });
     return;
   }
-  
+
   // 切换玩家
   currentPlayer = currentPlayer === 'red' ? 'black' : 'red';
   console.log('[DEBUG-executeMove] 切换回合后 currentPlayer=', currentPlayer);
@@ -1232,14 +1233,14 @@ function executeMove(move) {
 function checkGameOver() {
   var redPieces = pieces.filter(p => p.player === 'red');
   var blackPieces = pieces.filter(p => p.player === 'black');
-  
-  // 简单玩法：谁剩一子就输啦，都剩一个是和棋
+
+  // 简单玩法:谁剩一子就输啦,都剩一个是和棋
   if (redPieces.length === 1 && blackPieces.length === 1) {
-    return { winner: 'draw', reason: '双方各剩一子，和棋！' };
+    return { winner: 'draw', reason: '双方各剩一子,和棋!' };
   }
-  if (redPieces.length === 1) return { winner: 'black', reason: '红方只剩一子，黑方获胜！' };
-  if (blackPieces.length === 1) return { winner: 'red', reason: '黑方只剩一子，红方获胜！' };
-  
+  if (redPieces.length === 1) return { winner: 'black', reason: '红方只剩一子,黑方获胜!' };
+  if (blackPieces.length === 1) return { winner: 'red', reason: '黑方只剩一子,红方获胜!' };
+
   return null;
 }
 
@@ -1249,9 +1250,9 @@ function checkThreeRepeats(piece, fromR, fromC, toR, toC) {
   var key = getPieceKey(piece.char, piece.player);
   if (!pieceCycles[key]) pieceCycles[key] = {posA: null, posB: null, halfCycles: 0};
   var cycle = pieceCycles[key];
-  
+
   if (!cycle.posA) {
-    // 第一次移动：记录出发点为A，到达点为B
+    // 第一次移动:记录出发点为A,到达点为B
     cycle.posA = {row: fromR, col: fromC};
     cycle.posB = {row: toR, col: toC};
     cycle.halfCycles = 1;
@@ -1259,7 +1260,7 @@ function checkThreeRepeats(piece, fromR, fromC, toR, toC) {
     // 检查是否仍在A和B之间往返
     var atA = (toR === cycle.posA.row && toC === cycle.posA.col);
     var atB = (toR === cycle.posB.row && toC === cycle.posB.col);
-    
+
     if (atA || atB) {
       // 仍在A↔B之间
       cycle.halfCycles++;
@@ -1269,13 +1270,13 @@ function checkThreeRepeats(piece, fromR, fromC, toR, toC) {
         return {repeated: true};
       }
     } else {
-      // 走到了新位置，重置追踪，以新的出发点为A
+      // 走到了新位置,重置追踪,以新的出发点为A
       cycle.posA = {row: fromR, col: fromC};
       cycle.posB = {row: toR, col: toC};
       cycle.halfCycles = 1;
     }
   }
-  
+
   moveHistory.push({player:piece.player, char:piece.char, fromR:fromR, fromC:fromC, toR:toR, toC:toC});
   return {repeated:false};
 }
@@ -1292,8 +1293,8 @@ function executeRemoteMove(moveData) {
     var wasMoved = piece.moved;
     if (captured) pieces = pieces.filter(function(p){ return p !== captured; });
     piece.row = mv.row; piece.col = mv.col; piece.moved = true;
-    
-    // --- 记录走棋用于悔棋（远程走棋也需要记录）---
+
+    // --- 记录走棋用于悔棋(远程走棋也需要记录)---
     moveRecord.push({
       piece: piece,
       fromRow: moveData.fromRow,
@@ -1303,8 +1304,8 @@ function executeRemoteMove(moveData) {
       captured: captured,
       wasMoved: wasMoved === false ? false : true
     });
-    
-    // 简单玩法：吃甲不直接胜利
+
+    // 简单玩法:吃甲不直接胜利
     currentPlayer = currentPlayer === 'red' ? 'black' : 'red';
     var result = checkGameOver();
     if (result) { gameOver = true; showGameOver(result); }
@@ -1314,7 +1315,7 @@ function executeRemoteMove(moveData) {
 }
 
 // ===== 联网游戏启动 =====
-// ===== 视角切换：黑方旋转180° =====
+// ===== 视角切换:黑方旋转180° =====
 function applyPerspective() {
   var wrapper = document.querySelector('.board-wrapper');
   if (!wrapper) return;
@@ -1327,9 +1328,9 @@ function applyPerspective() {
 
 function startOnlineGame() {
   if (!isOnline || !myPlayer) return;
-  if (gameStarted) { console.log('[startOnlineGame] 已启动，忽略重复调用'); return; }
+  if (gameStarted) { console.log('[startOnlineGame] 已启动,忽略重复调用'); return; }
   gameStarted = true;
-  // 清除所有待执行的旧 setTimeout，防止重复 board 初始化
+  // 清除所有待执行的旧 setTimeout,防止重复 board 初始化
   if (window._soTimeout) { clearTimeout(window._soTimeout); window._soTimeout = null; }
   window._soTimeout = setTimeout(function(){ setupCanvas(); draw(); }, 300);
   initBoard(); if (!currentPlayer) currentPlayer = 'red'; selectedPiece = null; validMoves = []; gameOver = false;
@@ -1341,8 +1342,8 @@ function startOnlineGame() {
   applyPerspective(); // 黑方视角旋转
   updateTurnIndicator();
   startMoveTimer(); // 开始限时
-  updateStatus('【在线对战中】你是' + (myPlayer === 'red' ? '红方（先手）' : '黑方（后手）'));
-  // 棋局进行中，按钮改为「取消房间」
+  updateStatus('【在线对战中】你是' + (myPlayer === 'red' ? '红方(先手)' : '黑方(后手)'));
+  // 棋局进行中,按钮改为「取消房间」
   var bm = document.querySelector('.btn-multi'); if (bm) { bm.classList.add('active'); bm.innerHTML = '<span class="online-dot red"></span>取消房间'; }
   // 显示悔棋按钮
   updateUndoButton();
@@ -1350,7 +1351,7 @@ function startOnlineGame() {
 
 // ===== 发送数据 =====
 function sendData(data) {
-  // 统一通过 game_data 包装，让服务器能识别并转发
+  // 统一通过 game_data 包装,让服务器能识别并转发
   var wrapped = {type:'game_data', data:data};
   if (wsConn && wsConn.readyState === WebSocket.OPEN) wsConn.send(JSON.stringify(wrapped));
   else if (wsNetConn && wsNetConn.readyState === WebSocket.OPEN) wsNetConn.send(JSON.stringify(wrapped));
@@ -1362,21 +1363,21 @@ function handleReceivedData(data) {
   switch (data.type) {
     case 'move': if (data.player !== myPlayer) executeRemoteMove(data.move); break;
     case 'game_start':
-      if (gameStarted) { console.log('[WS-Remote] 游戏已开始，忽略 game_start'); break; }
+      if (gameStarted) { console.log('[WS-Remote] 游戏已开始,忽略 game_start'); break; }
       myPlayer = 'black';
-      showConnStatus('✅ Host 已开始！你是黑方（后手）', 'green');
+      showConnStatus('✅ Host 已开始!你是黑方(后手)', 'green');
       setTimeout(startOnlineGame, 500);
       break;
     case 'restart_request': receiveRestartRequest(data); break;
     case 'restart_agree':
-      // 对方同意了重启请求，我方执行重启
+      // 对方同意了重启请求,我方执行重启
       resetGame(true, data.firstMover || myPlayer);
-      updateStatus('对方同意，重新开始！' + (currentPlayer === myPlayer ? '你先走！' : '对手先走'));
+      updateStatus('对方同意,重新开始!' + (currentPlayer === myPlayer ? '你先走!' : '对手先走'));
       restartPending = false; restartRequestedBy = null;
       break;
     case 'restart_refuse':
       restartPending = false; restartRequestedBy = null;
-      updateStatus('对手拒绝重新开始，继续对局');
+      updateStatus('对手拒绝重新开始,继续对局');
       var btns2 = document.querySelectorAll('.btn-row button');
       btns2.forEach(function(b){ if(b.textContent.includes('等待对方确认')){ b.textContent='重新开始'; b.style.opacity='1'; b.style.cursor='pointer'; }});
       var goBtn2 = document.querySelector('#gameOverModal button');
@@ -1387,16 +1388,16 @@ function handleReceivedData(data) {
         gameOver = true;
         var reason = data.reason || '对局结束';
         showGameOver({ winner: data.winner, reason: reason });
-        updateStatus((data.winner === 'red' ? '红方' : '黑方') + '获胜！' + reason);
+        updateStatus((data.winner === 'red' ? '红方' : '黑方') + '获胜!' + reason);
         draw();
       }
       break;
     case 'quit_request': receiveQuitRequest(data); break;
     case 'undo_request': receiveUndoRequest(data); break;
     case 'undo_agree':
-      performUndo(myPlayer); // 申请方悔棋，撤销自己的最后一步
+      performUndo(myPlayer); // 申请方悔棋,撤销自己的最后一步
       undoPending = false;
-      updateStatus('对方同意，已撤销上一步！');
+      updateStatus('对方同意,已撤销上一步!');
       break;
     case 'undo_refuse':
       undoPending = false;
@@ -1406,29 +1407,30 @@ function handleReceivedData(data) {
       break;
     case 'quit_agree':
       var m2 = document.getElementById('quitModal'); if (m2) m2.classList.remove('show');
-      updateStatus('对方同意，退出对局...');
+      updateStatus('对方同意,退出对局...');
       setTimeout(performQuit, 800);
       break;
     case 'quit_refuse':
       quitPending = false; quitRequested = false;
       var bq2 = document.getElementById('btnQuit');
       if (bq2) { bq2.textContent = '申请退出'; bq2.style.opacity = '1'; bq2.style.cursor = 'pointer'; }
-      updateStatus('对手拒绝，继续对局');
+      updateStatus('对手拒绝,继续对局');
       break;
     case 'opponent_left':
       console.log('[DEBUG] opponent_left received! isOnline=' + isOnline + ' gameStarted=' + gameStarted);
       isOnline = false; gameStarted = false;
       clearMoveTimer();
+      // ★ 先显示对手离开弹窗（最重要，防止后续报错导致弹窗不显示）
+      var olm = document.getElementById('opponentLeftModal');
+      if (olm) { olm.style.display = 'flex'; } else { alert('[v2-0427] opponent_left: opponentLeftModal not found!'); }
       showConnStatus('⚠️ 对手已离开', 'yellow');
-      // 隐藏棋盘，回到主界面
+      // 隐藏棋盘
       var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none';
-      document.getElementById('modeSelect').style.display = 'flex';
-      // 隐藏其他弹窗，防止点击"再来一局"
+      (document.getElementById('modeSelect')||{}).style.display='flex';
+      // 隐藏其他弹窗，防止点击“再来一局”
       var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
       var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
-      var olm = document.getElementById('opponentLeftModal');
-      console.log('[DEBUG] opponentLeftModal el=', olm, 'display before=', olm ? olm.style.display : 'null');
-      if (olm) { olm.style.display = 'flex'; var mc = olm.querySelector('.modal'); if (mc) mc.style.transform = 'none'; console.log('[DEBUG] opponentLeftModal shown!'); }
+      console.log('[DEBUG] opponent_left handled, opponentLeftModal shown');
       break;
   }
 }
@@ -1483,10 +1485,10 @@ function doAutoMove() {
       options.push({ piece: myPieces[i], move: mvs[j] });
     }
   }
-  if (options.length === 0) return; // 无合法走法（理论上不会发生）
+  if (options.length === 0) return; // 无合法走法(理论上不会发生)
   // 随机选一个
   var pick = options[Math.floor(Math.random() * options.length)];
-  updateStatus('⏱ 超时！自动走棋：' + pick.piece.char);
+  updateStatus('⏱ 超时!自动走棋:' + pick.piece.char);
   // 复用点击走棋流程
   selectedPiece = pick.piece;
   validMoves = getValidMoves(pick.piece);
@@ -1508,13 +1510,13 @@ function showGameOver(result) {
   clearMoveTimer(); // 游戏结束停止计时
   var m = document.getElementById('gameOverModal'), t = document.getElementById('modalTitle'), tx = document.getElementById('modalText');
   if (!m || !t || !tx) return;
-  t.textContent = result.winner === 'draw' ? '平局！' : (result.winner === 'red' ? '红方胜！' : '黑方胜！');
+  t.textContent = result.winner === 'draw' ? '平局!' : (result.winner === 'red' ? '红方胜!' : '黑方胜!');
   t.style.color = result.winner === 'draw' ? '#aaa' : (result.winner === 'red' ? '#e05555' : '#aaa');
   tx.textContent = result.reason;
   m.classList.add('show');
   restartPending = false; restartRequestedBy = null; // 重置重启请求状态
 }
-// ===== 重新开始请求机制（在线模式需双方同意） =====
+// ===== 重新开始请求机制(在线模式需双方同意) =====
 var restartRequestedBy = null; // 谁发起了重启请求
 
 function requestRestart() {
@@ -1522,7 +1524,7 @@ function requestRestart() {
   if (restartPending) return; // 已有请求在等
   restartPending = true;
   restartRequestedBy = myPlayer;
-  updateStatus('已申请重新开始，等待对方同意...');
+  updateStatus('已申请重新开始,等待对方同意...');
   sendData({type:'restart_request', player: myPlayer});
   // 修改按钮状态
   var btns = document.querySelectorAll('.btn-row button');
@@ -1536,16 +1538,16 @@ function receiveRestartRequest(data) {
   restartRequestedBy = data.player;
   var m = document.getElementById('restartModal'), t = document.getElementById('restartTitle'), tx = document.getElementById('restartText');
   if (t) t.textContent = '对方请求重新开始';
-  if (tx) tx.textContent = '【' + (data.player === 'red' ? '红' : '黑') + '方】请求重新开始本局，是否同意？';
+  if (tx) tx.textContent = '【' + (data.player === 'red' ? '红' : '黑') + '方】请求重新开始本局,是否同意?';
   if (m) m.classList.add('show');
 }
 
 function agreeRestart() {
   var m = document.getElementById('restartModal'); if (m) m.classList.remove('show');
   sendData({type:'restart_agree', player: myPlayer, firstMover: restartRequestedBy || myPlayer});
-  // 双方都同意，执行重启，发起者先手
+  // 双方都同意,执行重启,发起者先手
   resetGame(true, restartRequestedBy || 'red');
-  updateStatus('双方同意，重新开始！' + (currentPlayer === myPlayer ? '你先走！' : '对手先走'));
+  updateStatus('双方同意,重新开始!' + (currentPlayer === myPlayer ? '你先走!' : '对手先走'));
   restartPending = false; restartRequestedBy = null;
 }
 
@@ -1553,7 +1555,7 @@ function refuseRestart() {
   var m = document.getElementById('restartModal'); if (m) m.classList.remove('show');
   restartPending = false; restartRequestedBy = null;
   sendData({type:'restart_refuse', player: myPlayer});
-  updateStatus('对手拒绝重新开始，继续对局');
+  updateStatus('对手拒绝重新开始,继续对局');
   // 恢复按钮状态
   var btns = document.querySelectorAll('.btn-row button');
   btns.forEach(function(b){ if(b.textContent.includes('等待对方确认')){ b.textContent='重新开始'; b.style.opacity='1'; b.style.cursor='pointer'; }});
@@ -1567,7 +1569,7 @@ function resetGame(isPassive, firstMover) {
   window._boardInited = false;
   if (window._soTimeout) { clearTimeout(window._soTimeout); window._soTimeout = null; }
   initBoard(); selectedPiece = null; validMoves = []; gameOver = false; gameStarted = false;
-  // 确定先手：发起重启请求者先走，颜色不变
+  // 确定先手:发起重启请求者先走,颜色不变
   if (isOnline) {
     if (firstMover) {
       currentPlayer = firstMover;
@@ -1585,14 +1587,14 @@ function resetGame(isPassive, firstMover) {
   undoPending = false;
   resetPieceTracking();
   updateTurnIndicator();
-  // 隐藏悔棋按钮（单机模式）
+  // 隐藏悔棋按钮(单机模式)
   if (!isOnline) {
     var bu = document.getElementById('btnUndo'); if (bu) bu.style.display = 'none';
   } else {
     updateUndoButton();
   }
   var isMyTurn = (currentPlayer === myPlayer);
-  updateStatus(isOnline ? '【在线】你是' + (myPlayer === 'red' ? '红方' : '黑方') + (isMyTurn ? '（先手）' : '（后手）') : '点击选择棋子');
+  updateStatus(isOnline ? '【在线】你是' + (myPlayer === 'red' ? '红方' : '黑方') + (isMyTurn ? '(先手)' : '(后手)') : '点击选择棋子');
   updatePiecesDisplay();
   setupCanvas(); draw();
   // 恢复按钮状态
@@ -1600,9 +1602,9 @@ function resetGame(isPassive, firstMover) {
   btns.forEach(function(b){ if(b.textContent.includes('等待对方确认')){ b.textContent='重新开始'; b.style.opacity='1'; b.style.cursor='pointer'; }});
   var goBtn = document.querySelector('#gameOverModal button');
   if (goBtn) { goBtn.textContent = '再来一局'; goBtn.style.opacity = '1'; }
-  // 在线模式：重开后启动游戏
+  // 在线模式:重开后启动游戏
   if (isOnline) {
-    gameStarted = false; // 重置守卫，允许startOnlineGame执行
+    gameStarted = false; // 重置守卫,允许startOnlineGame执行
     startOnlineGame();
   }
   startMoveTimer(); // 重开后启动限时
@@ -1616,7 +1618,7 @@ function closeOpponentLeftModal() {
   // 隐藏游戏结束弹窗和退出弹窗
   var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
   var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
-  // 隐藏游戏界面，关闭房间弹窗
+  // 隐藏游戏界面,关闭房间弹窗
   var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none';
   var rm = document.getElementById('roomModal'); if (rm) rm.classList.remove('show');
   var cs = document.getElementById('colorSelect'); if (cs) cs.style.display = 'none';
@@ -1638,15 +1640,15 @@ function closeOpponentLeftModal() {
   undoCount = {red: 3, black: 3};
   // 重置按钮状态
   var bm = document.querySelector('.btn-multi'); if (bm) { bm.classList.remove('active'); bm.innerHTML = '<span class="online-dot green"></span>多人对战'; }
-  updateStatus('对手已离开，可重新开始新对局');
+  updateStatus('对手已离开,可重新开始新对局');
   initBoard(); // 重置棋盘
   // 重新打开房间弹窗
   if (rm) rm.classList.add('show');
 }
 
-function openRoomModal() { 
+function openRoomModal() {
   if (isOnline && gameStarted) {
-    // 棋局进行中，直接申请退出
+    // 棋局进行中,直接申请退出
     requestQuit(); return;
   }
   var m = document.getElementById('roomModal'); if (m) m.classList.add('show');
@@ -1659,13 +1661,13 @@ function handleMultiButtonClick() {
 // ===== 复制房间号 =====
 function copyRoomCode() {
   var code = document.getElementById('roomCodeValue') || document.getElementById('localRoomCodeValue');
-  if (code) { navigator.clipboard.writeText(code.textContent).catch(function(){}); updateStatus('已复制房间号！'); }
+  if (code) { navigator.clipboard.writeText(code.textContent).catch(function(){}); updateStatus('已复制房间号!'); }
 }
 
 // ===== 模式切换 =====
 function startLocalMode() {
   gameMode = 'local';
-  document.getElementById('modeSelect').style.display = 'none';
+  (document.getElementById('modeSelect')||{}).style.display='none';
   document.getElementById('localServerInput').style.display = 'block';
   document.getElementById('peerjsPanel').style.display = 'none';
   // 不再自动填充地址
@@ -1673,9 +1675,9 @@ function startLocalMode() {
 
 // ===== 云端中转模式 (使用 localtunnel) =====
 function useCloudTunnel() {
-  // 切换到本地服务器面板（隐藏模式选择和PeerJS面板）
+  // 切换到本地服务器面板(隐藏模式选择和PeerJS面板)
   gameMode = 'local';
-  document.getElementById('modeSelect').style.display = 'none';
+  (document.getElementById('modeSelect')||{}).style.display='none';
   document.getElementById('localServerInput').style.display = 'block';
   document.getElementById('peerjsPanel').style.display = 'none';
   // 预设的云端服务器地址
@@ -1699,23 +1701,23 @@ function connectLocalServer() {
   wsConn = new WebSocket(wsUrl);
   wsConn.onopen = function() {
     console.log('[DEBUG] WebSocket connected!');
-    showLocalConnStatus('✅ 已连接服务器！请创建或加入房间', 'green');
-    // 连接成功后只显示输入框和按钮，房间号显示框留待创建房间时再显示
+    showLocalConnStatus('✅ 已连接服务器!请创建或加入房间', 'green');
+    // 连接成功后只显示输入框和按钮,房间号显示框留待创建房间时再显示
     document.getElementById('localRoomCodeDisplay').style.display = 'none';
     document.getElementById('localRoomCodeInput').style.display = 'block';
   };
-  wsConn.onmessage = function(e) { 
+  wsConn.onmessage = function(e) {
     console.log('[DEBUG] Received:', e.data);
-    try { handleLocalMessage(JSON.parse(e.data)); } catch(e){} 
+    try { handleLocalMessage(JSON.parse(e.data)); } catch(e){}
   };
-  wsConn.onerror = function(e) { 
+  wsConn.onerror = function(e) {
     console.log('[DEBUG] WebSocket error:', e);
-    showLocalConnStatus('❌ 连接错误', 'red'); 
+    showLocalConnStatus('❌ 连接错误', 'red');
   };
   wsConn.onclose = function(e) {
     console.log('[DEBUG] WebSocket closed:', e.code, e.reason);
     if (!isOnline) return;
-    // 如果已经显示了opponentLeftModal（已收到opponent_left消息），不再重复清理
+    // 如果已经显示了opponentLeftModal(已收到opponent_left消息),不再重复清理
     var olm = document.getElementById('opponentLeftModal');
     if (olm && olm.style.display === 'flex') { isOnline = false; gameStarted = false; clearMoveTimer(); return; }
     isOnline = false; gameStarted = false;
@@ -1725,17 +1727,17 @@ function connectLocalServer() {
     var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
     var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
     showLocalConnStatus('⚠️ 对手已离开房间', 'yellow');
-    document.getElementById('modeSelect').style.display = 'flex';
+    (document.getElementById('modeSelect')||{}).style.display='flex';
   };
 }
 // =============================================
-// PeerJS 云对战（无需任何服务器）
+// PeerJS 云对战(无需任何服务器)
 // =============================================
 var p2pConn = null; // PeerJS DataConnection
 
 function startPeerJSMode() {
   gameMode = 'peerjs';
-  document.getElementById('modeSelect').style.display = 'none';
+  (document.getElementById('modeSelect')||{}).style.display='none';
   document.getElementById('peerjsPanel').style.display = 'block';
   document.getElementById('localServerInput').style.display = 'none';
   document.getElementById('p2pStatus').style.display = 'none';
@@ -1776,15 +1778,15 @@ function p2pCreateRoom() {
   });
 
   peer.on('open', function(id) {
-    console.log('[P2P] 服务器连接成功，房间ID:', id);
-    showP2PStatus('✅ 服务器就绪，房间号: ' + id + '（分享给对手）', 'green');
+    console.log('[P2P] 服务器连接成功,房间ID:', id);
+    showP2PStatus('✅ 服务器就绪,房间号: ' + id + '(分享给对手)', 'green');
   });
 
   peer.on('connection', function(incoming) {
     p2pConn = incoming;
     p2pConn.on('open', function() {
       isOnline = true;
-      showP2PStatus('✅ 对手已加入！你是红方（先手）', 'green');
+      showP2PStatus('✅ 对手已加入!你是红方(先手)', 'green');
       // 发 confirm_colors 让对手知道自己是黑方
       p2pConn.send({ type: 'confirm_colors', guestColor: 'black' });
       setTimeout(startOnlineGame, 500);
@@ -1797,7 +1799,7 @@ function p2pCreateRoom() {
     var m = document.getElementById('opponentLeftModal'); if (m) { m.style.display = 'flex'; var mc = m.querySelector('.modal'); if (mc) mc.style.transform = 'none'; }
     var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
     var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
-    document.getElementById('modeSelect').style.display = 'flex';
+    (document.getElementById('modeSelect')||{}).style.display='flex';
     handleOpponentLeftCallback();
   });
   });
@@ -1849,16 +1851,16 @@ function p2pJoinRoom() {
   });
 
   peer.on('open', function(id) {
-    console.log('[P2P] 已连接到服务器，PeerID:', id);
+    console.log('[P2P] 已连接到服务器,PeerID:', id);
     p2pConn = peer.connect(code, { reliable: true });
     p2pConn.on('open', function() {
       isOnline = true;
-      showP2PStatus('✅ 已加入！你是黑方（后手）', 'green');
-      // Guest 已自动选黑，发送颜色给 Host
+      showP2PStatus('✅ 已加入!你是黑方(后手)', 'green');
+      // Guest 已自动选黑,发送颜色给 Host
       if (pendingColor) {
         p2pConn.send({ type: 'color_select', color: pendingColor });
       }
-      // 同时显示等待，Host 会回 confirm_colors
+      // 同时显示等待,Host 会回 confirm_colors
     });
     p2pConn.on('data', function(data) { handleReceivedData(data); });
     p2pConn.on('close', function() {
@@ -1869,7 +1871,7 @@ function p2pJoinRoom() {
       var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
       var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
       showP2PStatus('⚠️ 与房主断开连接', 'yellow');
-      document.getElementById('modeSelect').style.display = 'flex';
+      (document.getElementById('modeSelect')||{}).style.display='flex';
     });
     p2pConn.on('error', function(err) {
       showP2PStatus('❌ 连接失败: ' + err, 'red');
@@ -1883,7 +1885,7 @@ function p2pJoinRoom() {
 
   // 15秒超时
   guestJoinTimer = setTimeout(function() {
-    if (!isOnline) showP2PStatus('⏰ 加入超时，请确认房间号正确', 'red');
+    if (!isOnline) showP2PStatus('⏰ 加入超时,请确认房间号正确', 'red');
   }, 15000);
 }
 
@@ -1937,7 +1939,7 @@ sendData = function(data) {
 };
 function backToModeSelect() {
   cancelRoom(); cancelLocalRoom();
-  document.getElementById('modeSelect').style.display = 'block';
+  (document.getElementById('modeSelect')||{}).style.display='block';
   document.getElementById('peerjsPanel').style.display = 'none';
   document.getElementById('localServerInput').style.display = 'none';
 }
@@ -1959,12 +1961,12 @@ function setServerAddr() {
 
 // ===== 本地局域网 WebSocket =====
 function wsConnect(ip, port, callbacks) {
-  // 若已有连接且正常，暂不重复连接
+  // 若已有连接且正常,暂不重复连接
   if (wsConn && wsConn.readyState === WebSocket.OPEN) {
     if (callbacks && callbacks.onReady) callbacks.onReady();
     return;
   }
-  // 清理旧连接（异步，不阻塞新连接创建）
+  // 清理旧连接(异步,不阻塞新连接创建)
   var oldConn = wsConn;
   if (oldConn) {
     oldConn.onclose = null; // 忽略旧连接的 close 事件
@@ -1979,7 +1981,7 @@ function wsConnect(ip, port, callbacks) {
     try { msg = JSON.parse(String(e.data).trim()); } catch(err) { return; }
     handleLocalMessage(msg);
   };
-  wsConn.onclose = function(e) { if (callbacks && callbacks.onClose) callbacks.onClose(e); if (isOnline && gameStarted) { isOnline = false; gameStarted = false; var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none'; var m = document.getElementById('opponentLeftModal'); if (m) { m.style.display = 'flex'; var mc = m.querySelector('.modal'); if (mc) mc.style.transform = 'none'; } var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show'); var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show'); document.getElementById('modeSelect').style.display = 'flex'; } };
+  wsConn.onclose = function(e) { if (callbacks && callbacks.onClose) callbacks.onClose(e); if (isOnline && gameStarted) { isOnline = false; gameStarted = false; alert('[v2-0427] wsConn.onclose - LAN对手断开'); var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none'; var m = document.getElementById('opponentLeftModal'); if (m) { m.style.display = 'flex'; } else { alert('[v2-0427] wsConn.onclose: modal not found!'); } var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show'); var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show'); (document.getElementById('modeSelect')||{}).style.display='flex'; } };
   wsConn.onerror = function(e) { if (callbacks && callbacks.onError) callbacks.onError('连接错误'); };
 }
 function handleLocalMessage(msg) {
@@ -1987,48 +1989,49 @@ function handleLocalMessage(msg) {
   if (!msg || !msg.type) return;
   switch (msg.type) {
     case 'room_created':
-      if (myPlayer === 'red') { console.log('[WS-Local] 重复 room_created，忽略'); break; }
+      if (myPlayer === 'red') { console.log('[WS-Local] 重复 room_created,忽略'); break; }
       roomCode = msg.roomCode;
       var lc = document.getElementById('localRoomCodeDisplay');
       if (lc) lc.style.display = 'block';
       var lv = document.getElementById('localRoomCodeValue');
       if (lv) lv.textContent = roomCode;
       myPlayer = 'red'; myRole = 'host'; isOnline = true;
-      // 隐藏 connStatus 和输入框，只保留房间号显示框
+      // 隐藏 connStatus 和输入框,只保留房间号显示框
       var cs = document.getElementById('connStatus'); if (cs) { cs.style.display = 'none'; cs.innerHTML = ''; }
       var li = document.getElementById('localRoomCodeInput'); if (li) li.style.display = 'none';
-      // 在 localRoomCodeDisplay 中显示等待信息（不额外开 connStatus，避免两个框）
+      // 在 localRoomCodeDisplay 中显示等待信息(不额外开 connStatus,避免两个框)
       var waitEl = document.getElementById('localRoomCodeWait');
       if (waitEl) { waitEl.textContent = '⏳ 等待对手加入...'; waitEl.style.display = 'block'; }
-      console.log('[WS-Local] 我是红方，等待对手...');
+      console.log('[WS-Local] 我是红方,等待对手...');
       break;
     case 'room_joined':
-      if (gameStarted) { console.log('[WS-Local] 重复 room_joined，忽略'); break; }
+      if (gameStarted) { console.log('[WS-Local] 重复 room_joined,忽略'); break; }
       isOnline = true; myPlayer = 'black'; myRole = 'guest';
-      showLocalConnStatus('✅ 已加入！你是' + (myPlayer === 'red' ? '红方' : '黑方'), 'green');
-      console.log('[WS-Local] 我是黑方，开始游戏');
+      showLocalConnStatus('✅ 已加入!你是' + (myPlayer === 'red' ? '红方' : '黑方'), 'green');
+      console.log('[WS-Local] 我是黑方,开始游戏');
       setTimeout(startOnlineGame, 500);
       break;
     case 'guest_joined':
       isOnline = true; myRole = 'host';
       if (!myPlayer) myPlayer = 'red'; // 立即设置颜色
-      showLocalConnStatus('✅ 对手已加入！你是红方，游戏即将开始', 'green');
-      console.log('[WS-Local] 对手加入，我是红方');
-      setTimeout(startOnlineGame, 300); // 立即启动，gameStarted守卫防止重复
+      showLocalConnStatus('✅ 对手已加入!你是红方,游戏即将开始', 'green');
+      console.log('[WS-Local] 对手加入,我是红方');
+      setTimeout(startOnlineGame, 300); // 立即启动,gameStarted守卫防止重复
       sendData({type:'game_start', hostColor:myPlayer});
       break;
     case 'opponent_left':
       isOnline = false; gameStarted = false;
       clearMoveTimer();
+      // ★ 先显示对手离开弹窗
+      var olm2 = document.getElementById('opponentLeftModal');
+      if (olm2) { olm2.style.display = 'flex'; } else { alert('[v2-0427 LAN] opponent_left: modal not found!'); }
       showLocalConnStatus('⚠️ 对手已离开房间', 'yellow');
-      // 隐藏棋盘，回到主界面
+      // 隐藏棋盘
       var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none';
-      document.getElementById('modeSelect').style.display = 'flex';
-      // 隐藏其他弹窗，防止点击"再来一局"
+      (document.getElementById('modeSelect')||{}).style.display='flex';
+      // 隐藏其他弹窗
       var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
       var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
-      var m = document.getElementById('opponentLeftModal');
-      if (m) { m.style.display = 'flex'; var mc = m.querySelector('.modal'); if (mc) mc.style.transform = 'none'; }
       break;
     case 'error':
       showLocalConnStatus('❌ ' + (msg.message || '错误'), 'red'); break;
@@ -2038,7 +2041,7 @@ function handleLocalMessage(msg) {
 }
 function createLocalRoom() {
   if (wsConn && wsConn.readyState === WebSocket.OPEN) {
-    // 已连接，直接发创建房间消息
+    // 已连接,直接发创建房间消息
     doCreateRoom(); return;
   }
   roomCode = String(Math.floor(1000 + Math.random() * 9000));
@@ -2061,7 +2064,7 @@ function doCreateRoom() {
   roomCode = String(Math.floor(1000 + Math.random() * 9000));
   console.log('[DEBUG] doCreateRoom: sending create_room, roomCode=' + roomCode);
   wsConn.send(JSON.stringify({type:'create_room', roomCode:roomCode, playerId:'红方', mode:'simple'}));
-  showLocalConnStatus('⏳ 等待对手加入... 房间号：' + roomCode, 'yellow');
+  showLocalConnStatus('⏳ 等待对手加入... 房间号:' + roomCode, 'yellow');
   document.getElementById('localRoomCodeValue').textContent = roomCode;
   document.getElementById('localRoomCodeDisplay').style.display = 'block';
 }
@@ -2113,21 +2116,23 @@ function wsNetConnect(callbacks) {
     try { msg = JSON.parse(String(e.data).trim()); } catch(err) { return; }
     handleNetMessage(msg);
   };
-  wsNetConn.onclose = function(e) { 
-    clearTimeout(netConnTimeout); 
+  wsNetConn.onclose = function(e) {
+    clearTimeout(netConnTimeout);
     if (!isOnline) return;
     isOnline = false;
     clearMoveTimer();
+    alert('[v2-0427] wsNetConn.onclose - 对手断开连接');
     showLocalConnStatus('⚠️ 对手已断开连接', 'yellow');
     var m = document.getElementById('opponentLeftModal');
-    if (m) { m.style.display = 'flex'; var mc = m.querySelector('.modal'); if (mc) mc.style.transform = 'none'; }
+    if (m) { m.style.display = 'flex'; } else { alert('[v2-0427] wsNetConn.onclose: modal not found!'); }
   };
-  wsNetConn.onerror = function(e) { 
-    clearTimeout(netConnTimeout); 
+  wsNetConn.onerror = function(e) {
+    clearTimeout(netConnTimeout);
+    alert('[v2-0427] wsNetConn.onerror - 连接错误');
     var m = document.getElementById('opponentLeftModal');
-    if (m) { m.style.display = 'flex'; var mc = m.querySelector('.modal'); if (mc) mc.style.transform = 'none'; }
+    if (m) { m.style.display = 'flex'; } else { alert('[v2-0427] wsNetConn.onerror: modal not found!'); }
     clearMoveTimer();
-    if (callbacks && callbacks.onError) callbacks.onError('连接错误'); 
+    if (callbacks && callbacks.onError) callbacks.onError('连接错误');
   };
 }
 function handleNetMessage(msg) {
@@ -2142,19 +2147,19 @@ function handleNetMessage(msg) {
       break;
     case 'room_joined':
       isOnline = true; if (!myPlayer) myPlayer = 'black';
-      showConnStatus('✅ 已加入！等待 Host 开始游戏...', 'green');
+      showConnStatus('✅ 已加入!等待 Host 开始游戏...', 'green');
       setTimeout(startOnlineGame, 500);
       break;
     case 'game_start':
       if (gameStarted) break;
-      // Host是红方，Guest是黑方。收到game_start说明对方已准备好。
+      // Host是红方,Guest是黑方。收到game_start说明对方已准备好。
       if (!myPlayer) myPlayer = 'black';
-      showConnStatus('✅ 对手已就绪！你是' + (myPlayer === 'red' ? '红方（先手）' : '黑方（后手）'), 'green');
+      showConnStatus('✅ 对手已就绪!你是' + (myPlayer === 'red' ? '红方(先手)' : '黑方(后手)'), 'green');
       setTimeout(startOnlineGame, 500);
       break;
     case 'guest_joined':
       isOnline = true; if (!myPlayer) myPlayer = 'red';
-      showConnStatus('✅ 对手已加入！你是红方（先手），游戏即将开始...', 'green');
+      showConnStatus('✅ 对手已加入!你是红方(先手),游戏即将开始...', 'green');
       startOnlineGame();
       sendData({type:'game_start'});
       break;
@@ -2162,17 +2167,18 @@ function handleNetMessage(msg) {
       console.log('[DEBUG-NET] opponent_left received in handleNetMessage!');
       isOnline = false; gameStarted = false;
       clearMoveTimer();
+      // ★ 先显示对手离开弹窗(最重要,防止后续报错导致弹窗不显示)
+      var olm = document.getElementById('opponentLeftModal');
+      if (olm) { olm.style.display = 'flex'; } else { alert('[v2-0427 NET] opponent_left: modal not found!'); }
       showConnStatus('⚠️ 对手已离开', 'yellow');
-      // 隐藏棋盘，回到主界面
+      // 隐藏棋盘
       var ga = document.getElementById('gameArea'); if (ga) ga.style.display = 'none';
-      console.log('[DEBUG-NET] gameArea hidden, showing modeSelect');
-      document.getElementById('modeSelect').style.display = 'flex';
-      // 隐藏其他弹窗，防止点击"再来一局"
+      // 回到主界面
+      var ms = document.getElementById('modeSelect'); if (ms) ms.style.display = 'flex';
+      // 隐藏其他弹窗,防止点击"再来一局"
       var gm = document.getElementById('gameOverModal'); if (gm) gm.classList.remove('show');
       var qm = document.getElementById('quitModal'); if (qm) qm.classList.remove('show');
-      var m = document.getElementById('opponentLeftModal');
-      console.log('[DEBUG-NET] opponentLeftModal el=', m);
-      if (m) { m.style.display = 'flex'; var mc = m.querySelector('.modal'); if (mc) mc.style.transform = 'none'; console.log('[DEBUG-NET] opponentLeftModal shown!'); }
+      console.log('[DEBUG-NET] opponent_left handled, opponentLeftModal shown');
       break;
     case 'room_closed':
     case 'room_timeout':
@@ -2183,8 +2189,8 @@ function handleNetMessage(msg) {
 }
 var hostWaitTimer = null;
 function startHostWait(code) {
-  showConnStatus('⏳ 等待对手加入... 房间号：<b style="font-size:18px;letter-spacing:4px;">' + code + '</b>', 'yellow');
-  hostWaitTimer = setTimeout(function() { showConnStatus('⏰ 60秒无对手，刷新重试', 'red'); }, 60000);
+  showConnStatus('⏳ 等待对手加入... 房间号:<b style="font-size:18px;letter-spacing:4px;">' + code + '</b>', 'yellow');
+  hostWaitTimer = setTimeout(function() { showConnStatus('⏰ 60秒无对手,刷新重试', 'red'); }, 60000);
 }
 function createRoom() {
   roomCode = String(Math.floor(1000 + Math.random() * 9000));
@@ -2210,7 +2216,7 @@ function showJoinInput() {
 }
 function joinRoom() {
   var code = document.getElementById('inputRoomCode').value.trim();
-  if (!code || code.length !== 4 || isNaN(code)) { alert('请输入4位数字房间号！'); return; }
+  if (!code || code.length !== 4 || isNaN(code)) { alert('请输入4位数字房间号!'); return; }
   roomCode = code; myRole = 'guest'; myPlayer = null;
   document.getElementById('btnCreateRoom').style.display = 'none';
   document.getElementById('btnJoinRoom').style.display = 'none';
@@ -2230,7 +2236,7 @@ function closeRoomModal() {
 }
 
 function showSimpleRules() {
-  alert('简单玩法：丙丁壬癸走直线，其它棋子走日字。挡路可以憋马腿，谁见谁面都能杀。除甲之外其它棋子第一步只能移动不能互杀，移动之后才能杀别的棋子和被杀，谁剩一子就是输。都剩一个是和棋。');
+  alert('简单玩法:丙丁壬癸走直线,其它棋子走日字。挡路可以憋马腿,谁见谁面都能杀。除甲之外其它棋子第一步只能移动不能互杀,移动之后才能杀别的棋子和被杀,谁剩一子就是输。都剩一个是和棋。');
 }
 
 function cancelRoom() {
@@ -2257,7 +2263,7 @@ function requestQuit() {
   if (quitPending) return;
   quitPending = true; quitRequested = true;
   var bq = document.getElementById('btnQuit'); bq.textContent = '等待对方回应...'; bq.style.opacity = '0.5'; bq.style.cursor = 'not-allowed';
-  updateStatus('已申请退出，等待对方同意...');
+  updateStatus('已申请退出,等待对方同意...');
   sendData({type:'quit_request', player:myPlayer});
 }
 function receiveQuitRequest(data) {
@@ -2265,7 +2271,7 @@ function receiveQuitRequest(data) {
   var m = document.getElementById('quitModal'), t = document.getElementById('quitTitle'), tx = document.getElementById('quitText');
   var ba = document.getElementById('btnAgreeQuit'), br = document.getElementById('btnRefuseQuit');
   if (t) t.textContent = '对方申请退出';
-  if (tx) tx.textContent = '【' + (data.player === 'red' ? '红' : '黑') + '方】申请结束对局，是否同意？';
+  if (tx) tx.textContent = '【' + (data.player === 'red' ? '红' : '黑') + '方】申请结束对局,是否同意?';
   if (ba) ba.style.display = 'block';
   if (br) br.style.display = 'block';
   if (m) m.classList.add('show');
@@ -2273,13 +2279,13 @@ function receiveQuitRequest(data) {
 function agreeQuit() {
   var m = document.getElementById('quitModal'); if (m) m.classList.remove('show');
   sendData({type:'quit_agree', player:myPlayer});
-  setTimeout(function() { updateStatus('对方同意，退出对局...'); setTimeout(performQuit, 800); }, 100);
+  setTimeout(function() { updateStatus('对方同意,退出对局...'); setTimeout(performQuit, 800); }, 100);
 }
 function refuseQuit() {
   var m = document.getElementById('quitModal'); if (m) m.classList.remove('show');
   quitPending = false; quitRequested = false;
   var bq = document.getElementById('btnQuit'); bq.textContent = '申请退出'; bq.style.opacity = '1'; bq.style.cursor = 'pointer';
-  updateStatus('对手拒绝，继续对局');
+  updateStatus('对手拒绝,继续对局');
   sendData({type:'quit_refuse', player:myPlayer});
 }
 var quitPending = false, quitRequested = false;
@@ -2290,7 +2296,7 @@ function requestUndo() {
   if (!isOnline || !gameStarted || gameOver) { updateStatus('无法悔棋'); return; }
   // 检查悔棋次数
   if (undoCount[myPlayer] <= 0) { updateStatus('悔棋次数已用完'); return; }
-  // 检查是否有可撤销的走棋（必须是自己走的）
+  // 检查是否有可撤销的走棋(必须是自己走的)
   if (moveRecord.length === 0) { updateStatus('没有可撤销的走棋'); return; }
   // 从末尾找自己最后一步
   var myLastIdx = -1;
@@ -2298,14 +2304,14 @@ function requestUndo() {
     if (moveRecord[i].piece.player === myPlayer) { myLastIdx = i; break; }
   }
   if (myLastIdx < 0) { updateStatus('没有可撤销的走棋'); return; }
-  
+
   if (undoPending) return;
   undoPending = true;
   var bu = document.getElementById('btnUndo');
   bu.textContent = '等待对方确认...';
   bu.style.opacity = '0.5';
   bu.style.cursor = 'not-allowed';
-  updateStatus('已申请悔棋，等待对方同意...');
+  updateStatus('已申请悔棋,等待对方同意...');
   sendData({type: 'undo_request', player: myPlayer});
 }
 
@@ -2324,7 +2330,7 @@ function receiveUndoRequest(data) {
         <div class="corner corner-bl"></div>
         <div class="corner corner-br"></div>
         <h2 style="font-size:20px;letter-spacing:4px;margin-bottom:12px;">对方申请悔棋</h2>
-        <p style="color:#cba;font-size:14px;margin-bottom:24px;letter-spacing:1px;line-height:1.7;">【${data.player === 'red' ? '红' : '黑'}方】申请撤销上一步走棋，是否同意？</p>
+        <p style="color:#cba;font-size:14px;margin-bottom:24px;letter-spacing:1px;line-height:1.7;">【${data.player === 'red' ? '红' : '黑'}方】申请撤销上一步走棋,是否同意?</p>
         <div style="display:flex;gap:12px;">
           <button onclick="agreeUndo()" style="flex:1;padding:12px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">同意悔棋</button>
           <button onclick="refuseUndo()" style="flex:1;padding:12px;background:rgba(139,41,66,0.15);border:1px solid rgba(139,41,66,0.4);border-radius:3px;color:#c05070;font-size:14px;cursor:pointer;letter-spacing:2px;">拒绝</button>
@@ -2341,10 +2347,10 @@ function receiveUndoRequest(data) {
 function agreeUndo() {
   var m = document.getElementById('undoModal'); if (m) m.classList.remove('show');
   undoPending = false;
-  // 注意：此时同意悔棋的是对方(myPlayer)，申请悔棋的是对方(opponent)
-  // 发送同意消息，让对方执行悔棋
+  // 注意:此时同意悔棋的是对方(myPlayer),申请悔棋的是对方(opponent)
+  // 发送同意消息,让对方执行悔棋
   sendData({type: 'undo_agree', player: myPlayer});
-  // 同意方也需要本地执行悔棋（撤销申请方的走棋）
+  // 同意方也需要本地执行悔棋(撤销申请方的走棋)
   // 申请方的player是对方的player
   var opponent = myPlayer === 'red' ? 'black' : 'red';
   performUndo(opponent);
@@ -2360,18 +2366,18 @@ function refuseUndo() {
 
 function performUndo(undoPlayer) {
   if (moveRecord.length === 0) return;
-  
+
   // 确定悔棋方
   var player = undoPlayer || myPlayer;
-  
+
   // 找到悔棋方最后一步的索引
   var lastIdx = -1;
   for (var i = moveRecord.length - 1; i >= 0; i--) {
     if (moveRecord[i].piece.player === player) { lastIdx = i; break; }
   }
   if (lastIdx < 0) return;
-  
-  // 如果对方已走（最后一步不是悔棋方的），先撤销对方的走棋
+
+  // 如果对方已走(最后一步不是悔棋方的),先撤销对方的走棋
   while (moveRecord.length - 1 > lastIdx) {
     var oppMove = moveRecord.pop();
     oppMove.piece.row = oppMove.fromRow;
@@ -2379,28 +2385,28 @@ function performUndo(undoPlayer) {
     if (oppMove.wasMoved === false) oppMove.piece.moved = false;
     if (oppMove.captured) pieces.push(oppMove.captured);
   }
-  
+
   // 撤销悔棋方的最后一步
   var lastMove = moveRecord.pop();
   lastMove.piece.row = lastMove.fromRow;
   lastMove.piece.col = lastMove.fromCol;
   if (lastMove.wasMoved === false) lastMove.piece.moved = false;
   if (lastMove.captured) pieces.push(lastMove.captured);
-  
-  // 切换回合（回到悔棋方走棋前的状态，即轮到悔棋方走）
+
+  // 切换回合(回到悔棋方走棋前的状态,即轮到悔棋方走)
   currentPlayer = player;
-  
+
   // 减少悔棋次数
   undoCount[player]--;
-  
+
   // 更新UI
   updateTurnIndicator();
   updatePiecesDisplay();
   updateUndoButton();
-  
+
   // 重置三捉三将追踪
   resetPieceTracking();
-  
+
   draw();
   clearMoveTimer();
   startMoveTimer();
@@ -2441,7 +2447,7 @@ function performQuit() {
   initBoard(); currentPlayer = 'red'; selectedPiece = null; validMoves = []; gameOver = false;
   var bq = document.getElementById('btnQuit'); if (bq) { bq.style.display = 'none'; bq.textContent = '申请退出'; bq.style.opacity = '1'; bq.style.cursor = 'pointer'; }
   var bm = document.querySelector('.btn-multi'); if (bm) { bm.classList.remove('active'); bm.innerHTML = '<span class="online-dot green"></span>多人对战'; }
-  updateTurnIndicator(); updateStatus('已退出对局，可再次点击「多人对战」开始新对局'); updatePiecesDisplay();
+  updateTurnIndicator(); updateStatus('已退出对局,可再次点击「多人对战」开始新对局'); updatePiecesDisplay();
   applyPerspective(); // 退出时恢复正常视角
   var ga = document.getElementById('gameArea'); if (ga) ga.classList.remove('visible');
   openRoomModal();
