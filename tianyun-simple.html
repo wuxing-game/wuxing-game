@@ -6,7 +6,7 @@
 <title>天运棋·简单玩法 v4-0429a</title>
 <!-- PeerJS CDN加载 (带超时保护,不阻塞页面) -->
 <script>
-var GAME_MODE = 'simple'; var VERSION = 'simple-v4-0429b';
+var GAME_MODE = 'simple'; var VERSION = 'simple-v4-0429c';
 (function(){
   var cdns = [
     'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js',
@@ -1088,14 +1088,36 @@ function updateScore(delta, reason) {
   updateStatus((delta > 0 ? '+' : '') + delta + '积分 (' + reason + ')，当前积分: ' + currentUser.score);
 }
 
-// 扣除退出积分（直接关闭浏览器）
+// 扣除退出积分（直接关闭浏览器或切换页面）
+var exitScoreDeducted = false;
 function deductExitScore() {
-  if (!currentUser) return 0;
+  if (exitScoreDeducted || !currentUser) return 0;
+  exitScoreDeducted = true;
   currentUser.score = (currentUser.score || 0) - 20;
   saveCurrentUser();
   alert('退出扣分：你关闭浏览器，被扣20分');
   return currentUser.score;
 }
+
+// 监听浏览器关闭/切换页面事件（扣除积分）
+window.addEventListener('beforeunload', function(e) {
+  if (isOnline && gameStarted && currentUser && !exitScoreDeducted) {
+    deductExitScore();
+    if (typeof sendData === 'function') {
+      sendData({ type: 'player_exit', score: currentUser.score + 20 });
+    }
+  }
+});
+
+// 移动端：页面隐藏时也扣分
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden' && isOnline && gameStarted && currentUser && !exitScoreDeducted) {
+    deductExitScore();
+    if (typeof sendData === 'function') {
+      sendData({ type: 'player_exit', score: currentUser.score + 20 });
+    }
+  }
+});
 
 // ===== 步骤说明 Modal =====
 function showStepsModal() {
