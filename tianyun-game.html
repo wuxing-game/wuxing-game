@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>天运棋 v10</title>
+<title>天运棋·经典玩法</title>
 <!-- PeerJS CDN加载 (带超时保护，不阻塞页面) -->
 <script>
+var GAME_MODE = 'classic'; var VERSION = 'classic-v4-0429a';
 (function(){
   var cdns = [
     'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js',
@@ -511,6 +512,122 @@ button:active { transform: translateY(0); }
   .btn-row button { padding: 6px 10px; font-size: 11px; }
   .piece-dot { width: 18px; height: 18px; font-size: 10px; }
 }
+
+
+/* ===== 登录系统样式 ===== */
+.login-panel {
+  background: rgba(40,20,10,0.95);
+  border: 1px solid rgba(212,168,67,0.3);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.login-panel h3 {
+  color: var(--gold);
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+.login-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.login-row label {
+  color: #cba;
+  font-size: 12px;
+  min-width: 60px;
+  letter-spacing: 1px;
+}
+.login-row input {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(212,168,67,0.2);
+  border-radius: 3px;
+  color: #F5E6C8;
+  font-size: 14px;
+  outline: none;
+  font-family: 'Courier New', monospace;
+}
+.login-row input:focus {
+  border-color: rgba(212,168,67,0.5);
+}
+.login-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg,#9A7230,#D4A843);
+  border: none;
+  border-radius: 3px;
+  color: #1a0f0a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+.login-btn:hover { background: linear-gradient(135deg,#D4A843,#9A7230); }
+.login-btn.secondary {
+  background: rgba(212,168,67,0.15);
+  border: 1px solid rgba(212,168,67,0.3);
+  color: #D4A843;
+}
+.login-btn.secondary:hover { background: rgba(212,168,67,0.25); }
+.login-info {
+  color: #aaa;
+  font-size: 11px;
+  text-align: center;
+  margin-top: 6px;
+  letter-spacing: 1px;
+}
+.login-error {
+  color: #e05555;
+  font-size: 11px;
+  text-align: center;
+  margin-top: 6px;
+  letter-spacing: 1px;
+}
+.score-display {
+  color: #D4A843;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  margin: 8px 0;
+  letter-spacing: 2px;
+}
+.user-name {
+  color: #e0c080;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+/* ===== 步骤说明 Modal ===== */
+#stepsModal .modal {
+  max-width: min(420px, 92vw);
+  text-align: left;
+  padding: 20px 16px;
+}
+#stepsModal h2 {
+  text-align: center;
+  margin-bottom: 12px;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+#stepsModal .steps-content {
+  color: #cba;
+  font-size: 13px;
+  line-height: 1.9;
+  letter-spacing: 0;
+}
+#stepsModal .steps-content p {
+  margin-bottom: 8px;
+}
+#stepsModal .steps-content strong {
+  color: #D4A843;
+}
 </style>
 </head>
 <body>
@@ -633,6 +750,34 @@ button:active { transform: translateY(0); }
     <div class="corner corner-bl"></div>
     <div class="corner corner-br"></div>
     <h2 style="font-size:22px;letter-spacing:4px;margin-bottom:8px;">多人对战</h2>
+    <!-- 登录面板 -->
+    <div class="login-panel" id="loginPanel">
+      <h3>🔐 用户登录</h3>
+      <div id="loginForm">
+        <div class="login-row">
+          <label>用户名</label>
+          <input type="text" id="inputUsername" placeholder="自动生成/输入用户名" style="flex:1;padding:8px 12px;background:rgba(0,0,0,0.4);border:1px solid rgba(212,168,67,0.2);border-radius:3px;color:#F5E6C8;font-size:14px;outline:none;">
+        </div>
+        <div class="login-row">
+          <label>密码</label>
+          <input type="password" id="inputPassword" placeholder="4位数字" maxlength="4" style="flex:1;padding:8px 12px;background:rgba(0,0,0,0.4);border:1px solid rgba(212,168,67,0.2);border-radius:3px;color:#F5E6C8;font-size:22px;text-align:center;letter-spacing:8px;font-family:'Courier New',monospace;outline:none;" oninput="this.value=this.value.replace(/\D/g,'')">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="login-btn" onclick="doLogin()" style="flex:1;">登 录</button>
+          <button class="login-btn secondary" onclick="doRename()" id="btnRename" style="flex:1;display:none;">改 名</button>
+        </div>
+        <div class="login-info" id="loginInfo">初次登录将自动生成用户名和密码，获200积分</div>
+        <div class="login-error" id="loginError" style="display:none;"></div>
+      </div>
+      <div id="loggedInView" style="display:none;">
+        <div class="user-name" id="displayUsername"></div>
+        <div class="score-display" id="displayScore">积分: 200</div>
+        <div style="display:flex;gap:8px;">
+          <button class="login-btn secondary" onclick="showRenameForm()" style="flex:1;font-size:12px;">修改用户名</button>
+          <button class="login-btn secondary" onclick="doLogout()" style="flex:1;font-size:12px;">退出登录</button>
+        </div>
+      </div>
+    </div>
     <p id="roomSubtitle" style="color:#cba;font-size:13px;margin-bottom:24px;letter-spacing:1px;">输入相同房间号，匹配对手</p>
 
     <!-- 连接状态 -->
@@ -675,6 +820,8 @@ button:active { transform: translateY(0); }
       <button id="btnCancelRoom" onclick="cancelRoom()" style="display:none;flex:1;min-width:120px;padding:12px;background:rgba(139,41,66,0.2);border:1px solid rgba(139,41,66,0.4);border-radius:3px;color:#c05070;font-size:14px;cursor:pointer;letter-spacing:2px;">取消房间</button>
     </div>
 
+    <button onclick="showStepsModal()" style="margin-top:10px;width:100%;padding:8px;background:transparent;border:1px solid rgba(212,168,67,0.3);border-radius:3px;color:#D4A843;font-size:12px;cursor:pointer;letter-spacing:2px;opacity:0.7;">📋 步骤说明</button>
+    <button onclick="showClassicRules()" style="margin-top:10px;width:100%;padding:8px;background:transparent;border:1px solid rgba(212,168,67,0.3);border-radius:3px;color:#D4A843;font-size:12px;cursor:pointer;letter-spacing:2px;">规则说明</button>
     <button onclick="closeRoomModal()" style="margin-top:16px;width:100%;padding:10px;background:transparent;border:none;color:#C4B08A;font-size:12px;cursor:pointer;letter-spacing:2px;opacity:0.5;">稍后再说</button>
   </div>
 </div>
@@ -697,6 +844,48 @@ button:active { transform: translateY(0); }
 </div>
 
 <!-- 对手离开 Modal -->
+<!-- 经典规则 Modal -->
+<div class="modal-overlay" id="rulesModal" style="display:none;z-index:1001;">
+  <div class="modal" style="min-width:min(420px,92vw);text-align:left;">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <h2 style="text-align:center;margin-bottom:16px;">📜 经典规则</h2>
+    <div class="steps-content">
+      <p style="color:#cba;font-size:15px;line-height:1.8;">丙、丁、壬、癸走直线，其他棋子走日字。</p>
+      <p style="color:#cba;font-size:15px;line-height:1.8;">挡路可以蹩马腿。</p>
+      <p style="color:#cba;font-size:15px;line-height:1.8;">五行相克：金克木、木克土、土克水、水克火、火克金。</p>
+      <p style="color:#cba;font-size:15px;line-height:1.8;">同元素或克制元素可吃。甲不能过河。</p>
+      <p style="color:#cba;font-size:15px;line-height:1.8;">进入己方大本营的棋子失去五行保护。</p>
+      <p style="color:#cba;font-size:15px;line-height:1.8;">除甲之外的棋子没移动之前第一步不能吃和被杀。</p>
+      <p style="color:#cba;font-size:15px;line-height:1.8;">吃掉对方甲，或占领敌方大本营，或对方只剩1子获胜。</p>
+    </div>
+    <button onclick="closeRulesModal()" style="margin-top:20px;width:100%;padding:10px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">我知道了</button>
+  </div>
+</div>
+
+<!-- 步骤说明 Modal -->
+<div class="modal-overlay" id="stepsModal">
+  <div class="modal" style="min-width:min(420px,92vw);text-align:left;">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <h2 style="text-align:center;margin-bottom:16px;">📋 对战步骤说明</h2>
+    <div class="steps-content">
+      <p>① <strong>输入用户名登录。</strong>初次登录系统自动生成用户名和4位密码，获200积分。</p>
+      <p>② <strong>对弈双方：</strong>一方点击"创建房间"，一方点击"加入房间"加入。</p>
+      <p>③ <strong>限时规则：</strong>该走棋方思考超过60秒则被系统自动走棋。</p>
+      <p>④ <strong>悔棋规则：</strong>双方各有三次悔棋机会，需对方同意。</p>
+      <p>⑤ <strong>重开/退出：</strong>重新开局或退出房间的操作需征得对方同意。</p>
+      <p>⑥ <strong>违规扣分：</strong>直接关闭浏览器退出，扣20积分。</p>
+      <p style="margin-top:16px;text-align:center;color:#D4A843;">🏆 胜方+10分 · 负方-5分 · 负分可继续玩</p>
+    </div>
+    <button onclick="closeStepsModal()" style="margin-top:16px;width:100%;padding:10px 12px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:2px;">我知道了</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="opponentLeftModal">
   <div class="modal" style="min-width:300px;text-align:center;">
     <div class="corner corner-tl"></div>
@@ -1462,7 +1651,17 @@ function sendData(data) {
 function handleReceivedData(data) {
   if (!data || !data.type) return;
   switch (data.type) {
-    case 'move': if (data.player !== myPlayer) executeRemoteMove(data.move); break;
+    case 'move': if (data.player !== myPlayer) executeRemoteMove(data.move); 
+    case 'game_win':
+      updateScore(10, '获胜');
+      break;
+    case 'game_lose':
+      updateScore(-5, '失败');
+      break;
+    case 'player_exit':
+      updateScore(-20, '对方退出');
+      break;
+break;
     case 'game_start':
       if (gameStarted) { console.log('[WS-Remote] 游戏已开始，忽略 game_start'); break; }
       myPlayer = 'black';
@@ -1698,6 +1897,7 @@ function toggleRules() {
   var p = document.getElementById('rulesPanel'); if (p) p.style.display = p.style.display === 'none' ? 'block' : 'none';
 }
 function closeOpponentLeftModal() {
+  exitScoreDeducted = false;
   var m = document.getElementById('opponentLeftModal');
   if (m) m.style.display = 'none';
   // 隐藏游戏结束弹窗和退出弹窗
@@ -2454,7 +2654,7 @@ function performQuit() {
 
 // ===== 初始化 =====
 window.addEventListener('load', function() {
-  initBoard(); updatePiecesDisplay(); openRoomModal();
+  initBoard(); updatePiecesDisplay(); initUserSystem(); openRoomModal();
   var canvas = document.getElementById('piecesCanvas');
   if (canvas) canvas.addEventListener('click', handleCanvasClick);
   window.addEventListener('resize', function() {
@@ -2465,6 +2665,222 @@ window.addEventListener('load', function() {
     }
   });
 });
+
+// ===== 登录系统 & 积分制 =====
+var currentUser = null;
+var USERS_DB_KEY = 'tianyun_classic_users';
+var CURRENT_USER_KEY = 'tianyun_classic_current_user';
+
+function initUserSystem() {
+  var saved = localStorage.getItem(CURRENT_USER_KEY);
+  if (saved) {
+    try {
+      var user = JSON.parse(saved);
+      if (user && user.username && user.password) {
+        currentUser = user;
+        if (currentUser.score === undefined) { currentUser.score = 200; saveCurrentUser(); }
+        showLoggedInView();
+        return;
+      }
+    } catch(e) {}
+  }
+  showLoginView();
+}
+
+function generateUsername() {
+  var prefix = ['天运客','棋手','对弈者','纵横家','星盘客'];
+  var p = prefix[Math.floor(Math.random() * prefix.length)];
+  var num = Math.floor(100 + Math.random() * 900);
+  return p + num;
+}
+
+function generatePassword() {
+  return String(Math.floor(1000 + Math.random() * 9000));
+}
+
+function getUsersDB() {
+  try { return JSON.parse(localStorage.getItem(USERS_DB_KEY) || '{}'); } catch(e) { return {}; }
+}
+
+function saveUser(username, userData) {
+  var db = getUsersDB();
+  db[username] = userData;
+  localStorage.setItem(USERS_DB_KEY, JSON.stringify(db));
+}
+
+function findUser(username) {
+  var db = getUsersDB();
+  return db[username] || null;
+}
+
+function showLoginView() {
+  var lf = document.getElementById('loginForm');
+  var lv = document.getElementById('loggedInView');
+  if (lf) lf.style.display = 'block';
+  if (lv) lv.style.display = 'none';
+  var info = document.getElementById('loginInfo');
+  if (info) info.textContent = '初次登录将自动生成用户名和密码，获200积分';
+  var err = document.getElementById('loginError');
+  if (err) { err.style.display = 'none'; err.textContent = ''; }
+  if (!currentUser) {
+    var ui = document.getElementById('inputUsername');
+    var pi = document.getElementById('inputPassword');
+    if (ui && !ui.value) {
+      ui.value = generateUsername();
+      if (pi && !pi.value) {
+        pi.value = generatePassword();
+        var info2 = document.getElementById('loginInfo');
+        if (info2) info2.textContent = '已自动生成，确认后点击登录';
+      }
+    }
+  }
+}
+
+function showLoggedInView() {
+  if (!currentUser) return;
+  var lf = document.getElementById('loginForm');
+  var lv = document.getElementById('loggedInView');
+  if (lf) lf.style.display = 'none';
+  if (lv) lv.style.display = 'block';
+  var du = document.getElementById('displayUsername');
+  if (du) du.textContent = '用户: ' + currentUser.username;
+  var ds = document.getElementById('displayScore');
+  if (ds) ds.textContent = '积分: ' + (currentUser.score || 0);
+  if (currentUser.score === undefined) { currentUser.score = 200; saveCurrentUser(); }
+}
+
+function saveCurrentUser() {
+  if (currentUser) {
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+    saveUser(currentUser.username, currentUser);
+  }
+}
+
+function doLogin() {
+  var usernameInput = document.getElementById('inputUsername');
+  var passwordInput = document.getElementById('inputPassword');
+  var info = document.getElementById('loginInfo');
+  var err = document.getElementById('loginError');
+  var username = usernameInput ? usernameInput.value.trim() : '';
+  var password = passwordInput ? passwordInput.value.trim() : '';
+  if (!username) { username = generateUsername(); if (usernameInput) usernameInput.value = username; }
+  if (!password || password.length !== 4) {
+    if (!password) { password = generatePassword(); if (passwordInput) passwordInput.value = password; }
+    if (password.length !== 4) { if (err) { err.textContent = '请输入4位数字密码'; err.style.display = 'block'; } return; }
+  }
+  var existing = findUser(username);
+  if (existing) {
+    if (existing.password !== password) { if (err) { err.textContent = '密码错误，请重新输入'; err.style.display = 'block'; } return; }
+    currentUser = existing;
+  } else {
+    currentUser = { username: username, password: password, score: 200 };
+    saveUser(username, currentUser);
+    if (info) info.textContent = '注册成功！用户名: ' + username + ' 密码: ' + password + ' 积分: 200';
+  }
+  saveCurrentUser();
+  showLoggedInView();
+  if (err) err.style.display = 'none';
+  updateStatus('登录成功！用户: ' + currentUser.username + ' 积分: ' + currentUser.score);
+}
+
+function showRenameForm() {
+  var lf = document.getElementById('loginForm');
+  var lv = document.getElementById('loggedInView');
+  if (lf) lf.style.display = 'block';
+  if (lv) lv.style.display = 'none';
+  var usernameInput = document.getElementById('inputUsername');
+  var passwordInput = document.getElementById('inputPassword');
+  if (usernameInput) { usernameInput.value = ''; usernameInput.placeholder = '输入新用户名'; }
+  if (passwordInput) { passwordInput.value = ''; passwordInput.placeholder = '输入4位密码确认'; }
+  var info = document.getElementById('loginInfo');
+  if (info) info.textContent = '输入新用户名和4位密码确认改名';
+  var btn = document.getElementById('btnRename');
+  if (btn) { btn.style.display = 'flex'; btn.textContent = '确认改名'; btn.onclick = confirmRename; }
+}
+
+function confirmRename() {
+  var usernameInput = document.getElementById('inputUsername');
+  var passwordInput = document.getElementById('inputPassword');
+  var err = document.getElementById('loginError');
+  var newName = usernameInput ? usernameInput.value.trim() : '';
+  var password = passwordInput ? passwordInput.value.trim() : '';
+  if (!newName) { if (err) { err.textContent = '请输入新用户名'; err.style.display = 'block'; } return; }
+  if (!password || password.length !== 4) { if (err) { err.textContent = '请输入4位密码确认'; err.style.display = 'block'; } return; }
+  if (password !== currentUser.password) { if (err) { err.textContent = '密码错误'; err.style.display = 'block'; } return; }
+  if (findUser(newName) && newName !== currentUser.username) { if (err) { err.textContent = '用户名已被占用'; err.style.display = 'block'; } return; }
+  var db = getUsersDB();
+  delete db[currentUser.username];
+  currentUser.username = newName;
+  saveUser(newName, currentUser);
+  saveCurrentUser();
+  showLoggedInView();
+  var btn = document.getElementById('btnRename');
+  if (btn) { btn.style.display = 'none'; btn.onclick = doRename; }
+  updateStatus('用户名已修改为: ' + newName);
+}
+
+function doRename() { showRenameForm(); }
+
+function doLogout() {
+  currentUser = null;
+  localStorage.removeItem(CURRENT_USER_KEY);
+  showLoginView();
+  updateStatus('已退出登录');
+}
+
+function updateScore(delta, reason) {
+  if (!currentUser) return;
+  currentUser.score = (currentUser.score || 0) + delta;
+  saveCurrentUser();
+  showLoggedInView();
+  updateStatus((delta > 0 ? '+' : '') + delta + '积分 (' + reason + ')，当前积分: ' + currentUser.score);
+}
+
+// ===== 经典规则 Modal =====
+function showClassicRules() {
+  var m = document.getElementById('rulesModal');
+  if (m) { m.style.display = 'flex'; }
+  else { alert('rulesModal元素未找到！请刷新页面（Ctrl+Shift+R）'); }
+}
+function closeRulesModal() {
+  var m = document.getElementById('rulesModal');
+  if (m) m.style.display = 'none';
+}
+
+// ===== 步骤说明 Modal =====
+function showStepsModal() {
+  var m = document.getElementById('stepsModal');
+  if (m) { m.style.display = 'flex'; }
+  else { alert('stepsModal元素未找到！请刷新页面（Ctrl+Shift+R）'); }
+}
+function closeStepsModal() {
+  var m = document.getElementById('stepsModal');
+  if (m) m.style.display = 'none';
+}
+
+// ===== 退出扣分 =====
+var exitScoreDeducted = false;
+function deductExitScore() {
+  if (exitScoreDeducted || !currentUser) return 0;
+  exitScoreDeducted = true;
+  currentUser.score = (currentUser.score || 0) - 20;
+  saveCurrentUser();
+  alert('退出扣分：你关闭浏览器，被扣20分');
+  return currentUser.score;
+}
+window.addEventListener('beforeunload', function(e) {
+  if (isOnline && gameStarted && currentUser && !exitScoreDeducted) {
+    deductExitScore();
+    if (typeof sendData === 'function') sendData({ type: 'player_exit', score: currentUser.score + 20 });
+  }
+});
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden' && isOnline && gameStarted && currentUser && !exitScoreDeducted) {
+    deductExitScore();
+    if (typeof sendData === 'function') sendData({ type: 'player_exit', score: currentUser.score + 20 });
+  }
+});
+
 </script>
 </body>
 </html>
