@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>天运棋·简单玩法 v2-0427</title>
+<title>天运棋·简单玩法 v4-0429a</title>
 <!-- PeerJS CDN加载 (带超时保护,不阻塞页面) -->
 <script>
-var GAME_MODE = 'simple'; var VERSION = 'simple-v4-0428b';
+var GAME_MODE = 'simple'; var VERSION = 'simple-v4-0429a';
 (function(){
   var cdns = [
     'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js',
@@ -299,7 +299,7 @@ button:active { transform: translateY(0); }
   border-radius: 12px;
   padding: 40px;
   text-align: center;
-  max-width: 400px;
+  max-width: min(400px, 92vw);
   box-shadow: 0 0 60px rgba(212,168,67,0.3);
 }
 
@@ -605,21 +605,24 @@ button:active { transform: translateY(0); }
 
 /* ===== 步骤说明 Modal ===== */
 #stepsModal .modal {
-  max-width: 420px;
+  max-width: min(420px, 92vw);
   text-align: left;
+  padding: 20px 16px;
 }
 #stepsModal h2 {
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+  font-size: 18px;
+  letter-spacing: 2px;
 }
 #stepsModal .steps-content {
   color: #cba;
   font-size: 13px;
-  line-height: 2;
-  letter-spacing: 1px;
+  line-height: 1.9;
+  letter-spacing: 0;
 }
 #stepsModal .steps-content p {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 #stepsModal .steps-content strong {
   color: #D4A843;
@@ -649,7 +652,7 @@ button:active { transform: translateY(0); }
       <div id="moveTimer" class="move-timer" style="display:none;">⏱ <span id="timerCount">60</span>秒</div>
       <div id="statusText" class="status-text">点击选择棋子 <span style="color:#555;font-size:10px;float:right;">v2-0427</span></div>
       <div class="btn-row">
-        <button onclick="requestRestart()">��新开始</button>
+        <button onclick="requestRestart()">重新开始</button>
         <button onclick="toggleRules()">规则</button>
         <button class="btn-multi" onclick="openRoomModal()"><span class="online-dot green"></span>多人对战</button>
         <button id="btnUndo" onclick="requestUndo()" style="display:none;padding:6px 10px;background:rgba(80,150,80,0.15);border:1px solid rgba(80,150,80,0.3);border-radius:3px;color:#70c070;font-size:12px;cursor:pointer;letter-spacing:1px;" title="悔棋(每局3次)">悔棋(3)</button>
@@ -671,41 +674,7 @@ button:active { transform: translateY(0); }
       </div>
     </div>
 
-    <div class="rules-panel" id="rulesPanel" style="display:none;">
-      <h3>📜 简单玩法规则</h3>
-      <div class="rule-section">
-        <h4>走棋方式</h4>
-        <ul>
-          <li>丙、丁、壬、癸 → 直线行走</li>
-          <li>甲、乙、庚、辛、戊、己 → 走"日"字</li>
-          <li>走"日"字时,有蹩马腿限制</li>
-        </ul>
-      </div>
-      <div class="rule-section">
-        <h4>吃子规则</h4>
-        <ul>
-          <li>谁见谁面都能杀(无五行限制)</li>
-          <li>除甲之外,动才活(未动棋子不可被吃,也不吃对方)</li>
-          <li>甲可过河</li>
-          <li>长捉长将不过三</li>
-        </ul>
-      </div>
-      <div class="rule-section">
-        <h4>胜负规则</h4>
-        <ul>
-          <li>对方只剩一子 → 你胜</li>
-          <li>双方都剩一子 → 和棋</li>
-        </ul>
-      </div>
-      <div class="rule-section">
-        <h4>限时规则</h4>
-        <ul>
-          <li>每步限时60秒,超时自动随机走棋。</li>
-        </ul>
-      </div>
-    </div>
-
-<div class="modal-overlay" id="gameOverModal">
+    <div class="modal-overlay" id="gameOverModal">
   <div class="modal">
     <h2 id="modalTitle">游戏结束</h2>
     <p id="modalText"></p>
@@ -720,7 +689,7 @@ button:active { transform: translateY(0); }
     <div class="corner corner-tr"></div>
     <div class="corner corner-bl"></div>
     <div class="corner corner-br"></div>
-    <h2 id="restartTitle" style="font-size:20px;letter-spacing:4px;margin-bottom:12px;">对方请���重新开始</h2>
+    <h2 id="restartTitle" style="font-size:20px;letter-spacing:4px;margin-bottom:12px;">对方请求重新开始</h2>
     <p id="restartText" style="color:#cba;font-size:14px;margin-bottom:24px;letter-spacing:1px;line-height:1.7;">对方请求重新开始本局,是否同意?</p>
     <div style="display:flex;gap:12px;">
       <button onclick="agreeRestart()" style="flex:1;padding:12px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">同意,重新开始</button>
@@ -828,10 +797,57 @@ button:active { transform: translateY(0); }
     </div>
     <button onclick="refuseQuit()" style="margin-top:12px;width:100%;padding:8px;background:transparent;border:none;color:#C4B08A;font-size:11px;cursor:pointer;letter-spacing:1px;opacity:0.4;">稍后再说</button>
   </div>
+  </div>
+
+<!-- 规则说明 Modal -->
+<div class="modal-overlay" id="rulesModal" style="display:none;z-index:1001;">
+  <div class="modal" style="min-width:min(420px,92vw);text-align:left;">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <h2 style="text-align:center;margin-bottom:16px;">📜 简单玩法规则</h2>
+    <div class="steps-content">
+      <div class="rule-section">
+        <h4 style="color:#D4A843;font-size:15px;margin:12px 0 6px;">走棋方式</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="padding:3px 0;color:#cba;font-size:14px;">• 丙、丁、壬、癸 → 直线行走</li>
+          <li style="padding:3px 0;color:#cba;font-size:14px;">• 甲、乙、庚、辛、戊、己 → 走"日"字</li>
+          <li style="padding:3px 0;color:#cba;font-size:14px;">• 走"日"字时,有蹩马腿限制</li>
+        </ul>
+      </div>
+      <div class="rule-section">
+        <h4 style="color:#D4A843;font-size:15px;margin:12px 0 6px;">吃子规则</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="padding:3px 0;color:#cba;font-size:14px;">• 谁见谁面都能杀(无五行限制)</li>
+          <li style="padding:3px 0;color:#cba;font-size:14px;">• 除甲之外,动才活(未动棋子不可被吃,也不吃对方)</li>
+          <li style="padding:3px 0;color:#cba;font-size:14px;">• 甲可过河</li>
+          <li style="padding:3px 0;color:#cba;font-size:14px;">• 长捉长将不过三</li>
+        </ul>
+      </div>
+      <div class="rule-section">
+        <h4 style="color:#D4A843;font-size:15px;margin:12px 0 6px;">胜负规则</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="padding:3px 0;color:#cba;font-size:14px;">• 对方只剩一子 → 你胜</li>
+          <li style="padding:3px 0;color:#cba;font-size:14px;">• 双方都剩一子 → 和棋</li>
+        </ul>
+      </div>
+      <div class="rule-section">
+        <h4 style="color:#D4A843;font-size:15px;margin:12px 0 6px;">限时规则</h4>
+        <ul style="list-style:none;padding:0;">
+          <li style="padding:3px 0;color:#cba;font-size:14px;">• 每步限时60秒,超时自动随机走棋。</li>
+        </ul>
+      </div>
+    </div>
+    <button onclick="closeRulesModal()" style="margin-top:20px;width:100%;padding:10px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">知道了</button>
+  </div>
+</div>
+
+
 
 <!-- 步骤说明 Modal -->
 <div class="modal-overlay" id="stepsModal">
-  <div class="modal" style="min-width:420px;text-align:left;">
+  <div class="modal" style="min-width:min(420px,92vw);text-align:left;">
     <div class="corner corner-tl"></div>
     <div class="corner corner-tr"></div>
     <div class="corner corner-bl"></div>
@@ -846,7 +862,7 @@ button:active { transform: translateY(0); }
       <p>⑥ <strong>违规扣分：</strong>直接关闭浏览器退出，扣20积分。</p>
       <p style="margin-top:16px;text-align:center;color:#D4A843;">🏆 胜方+10分 · 负方-5分 · 负分可继续玩</p>
     </div>
-    <button onclick="closeStepsModal()" style="margin-top:20px;width:100%;padding:12px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">我知道了</button>
+    <button onclick="closeStepsModal()" style="margin-top:16px;width:100%;padding:10px 12px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:2px;">我知道了</button>
   </div>
 </div>
 
@@ -1103,18 +1119,19 @@ function deductExitScore() {
   if (!currentUser) return 0;
   currentUser.score = (currentUser.score || 0) - 20;
   saveCurrentUser();
-        alert('⚠️ 您中途退出，已扣除 20 积分！剩余积分: ' + currentUser.score);
+  alert('退出扣分：你关闭浏览器，被扣20分');
   return currentUser.score;
 }
 
 // ===== 步骤说明 Modal =====
 function showStepsModal() {
   var m = document.getElementById('stepsModal');
-  if (m) m.classList.add('show');
+  if (m) { m.style.display = 'flex'; }
+  else { alert('stepsModal元素未找到！请刷新页面（Ctrl+Shift+R）'); }
 }
 function closeStepsModal() {
   var m = document.getElementById('stepsModal');
-  if (m) m.classList.remove('show');
+  if (m) m.style.display = '';
 }
 
 // ===== 修改游戏结束逻辑，更新积分 =====
@@ -2080,7 +2097,12 @@ function resetGame(isPassive, firstMover) {
   startMoveTimer(); // 重开后启动限时
 }
 function toggleRules() {
-  var p = document.getElementById('rulesPanel'); if (p) p.style.display = p.style.display === 'none' ? 'block' : 'none';
+  var m = document.getElementById('rulesModal');
+  if (m) m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+}
+function closeRulesModal() {
+  var m = document.getElementById('rulesModal');
+  if (m) m.style.display = 'none';
 }
 function closeOpponentLeftModal() {
   var m = document.getElementById('opponentLeftModal');
@@ -2715,7 +2737,8 @@ function closeRoomModal() {
 }
 
 function showSimpleRules() {
-  alert('简单玩法:丙丁壬癸走直线,其它棋子走日字。挡路可以憋马腿,谁见谁面都能杀。除甲之外其它棋子第一步只能移动不能互杀,移动之后才能杀别的棋子和被杀,谁剩一子就是输。都剩一个是和棋。');
+  var m = document.getElementById('rulesModal');
+  if (m) m.style.display = 'flex';
 }
 
 function cancelRoom() {
