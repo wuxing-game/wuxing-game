@@ -6,7 +6,7 @@
 <title>天运棋·简单玩法 v4-0429a</title>
 <!-- PeerJS CDN加载 (带超时保护,不阻塞页面) -->
 <script>
-var GAME_MODE = 'simple'; var VERSION = 'simple-v4-0429a';
+var GAME_MODE = 'simple'; var VERSION = 'simple-v4-0429b';
 (function(){
   var cdns = [
     'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js',
@@ -799,47 +799,21 @@ button:active { transform: translateY(0); }
   </div>
   </div>
 
-<!-- 规则说明 Modal -->
+<!-- 简单规则 Modal -->
 <div class="modal-overlay" id="rulesModal" style="display:none;z-index:1001;">
   <div class="modal" style="min-width:min(420px,92vw);text-align:left;">
     <div class="corner corner-tl"></div>
     <div class="corner corner-tr"></div>
     <div class="corner corner-bl"></div>
     <div class="corner corner-br"></div>
-    <h2 style="text-align:center;margin-bottom:16px;">📜 简单玩法规则</h2>
+    <h2 style="text-align:center;margin-bottom:16px;">📜 简单规则</h2>
     <div class="steps-content">
-      <div class="rule-section">
-        <h4 style="color:#D4A843;font-size:15px;margin:12px 0 6px;">走棋方式</h4>
-        <ul style="list-style:none;padding:0;">
-          <li style="padding:3px 0;color:#cba;font-size:14px;">• 丙、丁、壬、癸 → 直线行走</li>
-          <li style="padding:3px 0;color:#cba;font-size:14px;">• 甲、乙、庚、辛、戊、己 → 走"日"字</li>
-          <li style="padding:3px 0;color:#cba;font-size:14px;">• 走"日"字时,有蹩马腿限制</li>
-        </ul>
-      </div>
-      <div class="rule-section">
-        <h4 style="color:#D4A843;font-size:15px;margin:12px 0 6px;">吃子规则</h4>
-        <ul style="list-style:none;padding:0;">
-          <li style="padding:3px 0;color:#cba;font-size:14px;">• 谁见谁面都能杀(无五行限制)</li>
-          <li style="padding:3px 0;color:#cba;font-size:14px;">• 除甲之外,动才活(未动棋子不可被吃,也不吃对方)</li>
-          <li style="padding:3px 0;color:#cba;font-size:14px;">• 甲可过河</li>
-          <li style="padding:3px 0;color:#cba;font-size:14px;">• 长捉长将不过三</li>
-        </ul>
-      </div>
-      <div class="rule-section">
-        <h4 style="color:#D4A843;font-size:15px;margin:12px 0 6px;">胜负规则</h4>
-        <ul style="list-style:none;padding:0;">
-          <li style="padding:3px 0;color:#cba;font-size:14px;">• 对方只剩一子 → 你胜</li>
-          <li style="padding:3px 0;color:#cba;font-size:14px;">• 双方都剩一子 → 和棋</li>
-        </ul>
-      </div>
-      <div class="rule-section">
-        <h4 style="color:#D4A843;font-size:15px;margin:12px 0 6px;">限时规则</h4>
-        <ul style="list-style:none;padding:0;">
-          <li style="padding:3px 0;color:#cba;font-size:14px;">• 每步限时60秒,超时自动随机走棋。</li>
-        </ul>
-      </div>
+      <p style="color:#cba;font-size:15px;line-height:1.8;">丙、丁、壬、癸走直线，其他棋子走日字。</p>
+      <p style="color:#cba;font-size:15px;line-height:1.8;">挡路可以憋马腿，谁见谁面都能杀。</p>
+      <p style="color:#cba;font-size:15px;line-height:1.8;">除甲之外的棋子没移动之前第一步不能杀别的棋子也不被杀，移动之后才可以杀和被杀。</p>
+      <p style="color:#cba;font-size:15px;line-height:1.8;">双方各剩一子和棋，谁剩一子则对方获胜。</p>
     </div>
-    <button onclick="closeRulesModal()" style="margin-top:20px;width:100%;padding:10px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">知道了</button>
+    <button onclick="closeRulesModal()" style="margin-top:20px;width:100%;padding:10px;background:linear-gradient(135deg,#9A7230,#D4A843);border:none;border-radius:3px;color:#1a0f0a;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:3px;">我知道了</button>
   </div>
 </div>
 
