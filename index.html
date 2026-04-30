@@ -312,7 +312,19 @@ h1{font-family:'Ma Shan Zheng',cursive;font-size:3rem;background:linear-gradient
   </div>
   <h2 style="text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',cursive;font-size:1.6rem;margin-bottom:.5rem">⚡ 一维高级运算</h2>
   <p style="text-align:center;color:var(--txt2);font-size:.8rem;margin-bottom:1rem">通过同一外力若干次对静物的同时作用，达成目标</p>
-  <div class="vols" id="advancedVols"></div>
+  <!-- 关卡选择区域 -->
+  <div id="advVolSelect">
+    <div class="vols" id="advancedVols"></div>
+  </div>
+  <!-- 关卡题目选择区域（默认隐藏） -->
+  <div id="advLevelSelect" style="display:none">
+    <div style="text-align:center;margin-bottom:1rem">
+      <button onclick="showAdvVolSelect()" style="padding:.5rem 1.5rem;background:linear-gradient(135deg,rgba(212,175,55,.3),rgba(212,175,55,.15));border:1px solid rgba(212,175,55,.4);border-radius:8px;color:var(--gold);cursor:pointer;font-size:.85rem">📋 选关</button>
+    </div>
+    <h3 style="text-align:center;color:var(--gold);font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;margin-bottom:.5rem" id="advLevelTitle"></h3>
+    <p style="text-align:center;color:var(--txt2);font-size:.75rem;margin-bottom:1rem" id="advLevelDesc"></p>
+    <div class="level-grid" id="advLevelGrid" style="max-width:400px;margin:0 auto"></div>
+  </div>
 </div>
 
 <!-- 初级运算页面 -->
@@ -480,8 +492,8 @@ h1{font-family:'Ma Shan Zheng',cursive;font-size:3rem;background:linear-gradient
   <!-- 底部导航 -->
   <div class="game-nav" id="gameNav">
     <button class="nav-btn" onclick="navLevel(-1)" id="prevBtn">⬅ 上一题</button>
-    <button class="nav-btn sel" id="selectLevelBtn">📋 选关</button>
-    <button class="nav-btn" onclick="goBack()">🏠 主页</button>
+    <button class="nav-btn sel" onclick="goBack()">📋 选关</button>
+    <button class="nav-btn" onclick="show('menu');document.getElementById('game').classList.remove('show');">🏠 主页</button>
     <button class="nav-btn" onclick="navLevel(1)" id="nextBtn">下一题 ➡</button>
   </div>
 </div>
@@ -678,10 +690,11 @@ function navLevel(dir) {
 }
 
 function startLevel(vi, li) {
-  closeModal();
   S.volIdx = vi; S.lvlIdx = li; S.forces = []; S.hintIdx = 0;
   const vol = VOLS[vi], pz = getPuzzles(vol)[li];
   S.curVals = {...pz.init};
+  // 隐藏关卡选择区域
+  document.getElementById('advancedMenu').style.display = 'none';
   show('game');
   document.getElementById('gnum').textContent = li + 1;
   document.getElementById('gtitle').textContent = vol.name;
@@ -811,10 +824,22 @@ function showHint() {
 }
 
 function goBack() { 
-  closeModal();
-  show('menu'); 
-  renderMenu(); 
+  // 返回关卡题目选择页面
+  document.getElementById('game').classList.remove('show');
+  document.getElementById('advancedMenu').style.display = '';
+  // 显示题目选择，隐藏关卡选择
+  document.getElementById('advVolSelect').style.display = 'none';
+  document.getElementById('advLevelSelect').style.display = '';
+  // 刷新题目列表
+  if (S.volIdx >= 0) selectAdvVol(S.volIdx);
 }
+
+function goBackToVol() {
+  // 返回关卡选择
+  document.getElementById('advVolSelect').style.display = '';
+  document.getElementById('advLevelSelect').style.display = 'none';
+}
+
 function toggleRules() { document.getElementById('rulesHd').classList.toggle('open'); document.getElementById('rulesBd').classList.toggle('show'); }
 
 function renderRulesTable(vol) {
@@ -851,6 +876,9 @@ function showAdvanced() {
   document.getElementById('advancedMenu').style.display = '';
   document.getElementById('basicMenu').style.display = 'none';
   document.getElementById('basicGame').style.display = 'none';
+  // 显示关卡选择，隐藏题目选择
+  document.getElementById('advVolSelect').style.display = '';
+  document.getElementById('advLevelSelect').style.display = 'none';
   renderAdvancedMenu();
 }
 
@@ -866,9 +894,40 @@ function renderAdvancedMenu() {
       <div class="vdesc">${v.desc}</div>
       <div class="velems">${v.els.map(e => `<span style="color:${HEX[e]}">${ICONS[e]}${e}</span>`).join('')}</div>
       <div class="vprog"><div class="pbar"><div class="pfill" style="width:${cnt*10}%"></div></div><div class="pscore">${cnt}/10</div></div>`;
-    div.addEventListener('click', function() { openLevelPicker(vi); });
+    div.addEventListener('click', function() { selectAdvVol(vi); });
     container.appendChild(div);
   });
+}
+
+// 选择关卡（显示该关卡的10个题目，隐藏其他关卡）
+function selectAdvVol(vi) {
+  S.volIdx = vi;
+  const vol = VOLS[vi];
+  // 隐藏关卡选择，显示题目选择
+  document.getElementById('advVolSelect').style.display = 'none';
+  document.getElementById('advLevelSelect').style.display = '';
+  // 更新标题和描述
+  document.getElementById('advLevelTitle').textContent = vol.emoji + ' ' + vol.name;
+  document.getElementById('advLevelDesc').innerHTML = `${vol.desc}<br>${vol.els.map(e => `<span style="color:${HEX[e]}">${ICONS[e]}${e}</span>`).join(' ')}`;
+  // 渲染10个题目按钮
+  const grid = document.getElementById('advLevelGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const d = S.done[vol.id] && S.done[vol.id][i];
+    const stars = d ? starsHtml(d.stars) : '☆☆☆';
+    const btn = document.createElement('div');
+    btn.className = `lp-btn${d?' done':''}`;
+    btn.innerHTML = `<div class="lp-num">${i+1}</div><div class="lp-stars">${stars}</div>`;
+    const lvlIdx = i;
+    btn.addEventListener('click', function() { startLevel(vi, lvlIdx); });
+    grid.appendChild(btn);
+  }
+}
+
+// 返回关卡选择
+function showAdvVolSelect() {
+  document.getElementById('advVolSelect').style.display = '';
+  document.getElementById('advLevelSelect').style.display = 'none';
 }
 
 // ===== 初级运算函数 =====
@@ -1029,16 +1088,6 @@ try {
   const bd = JSON.parse(localStorage.getItem('wuxing_basic_v1'));
   if (bd) BS.done = bd;
 } catch(e) {}
-
-// 绑定选关按钮事件
-document.getElementById('selectLevelBtn').onclick = function() {
-  openLevelPicker(S.volIdx);
-};
-
-// 点击弹窗背景关闭
-document.getElementById('levelModal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
 </script>
 </body>
 </html>
